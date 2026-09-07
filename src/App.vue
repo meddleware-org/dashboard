@@ -6,7 +6,8 @@ import {
   ColorModeControl, SidebarItem, StatusWidget,
   useColorMode,
 } from '@meddleware/ui'
-import { useWallet } from '@meddleware/wallet-adapter'
+import { useWallet, WalletSelector } from '@meddleware/wallet-adapter'
+import type { Wallet } from '@mysten/wallet-standard'
 
 const { mode, set } = useColorMode('dark')
 const route = useRoute()
@@ -22,13 +23,12 @@ const { wallets, account, connect, disconnect, connecting } = useWallet({
   requiredFeatures: ['sui:signTransaction', 'sui:signPersonalMessage'],
 })
 
-async function onConnect(): Promise<void> {
-  const w = wallets.value[0]
-  if (w) await connect(w)
+async function onSelect(w: Wallet): Promise<void> {
+  await connect(w)
 }
 
 function shortAddr(addr: string): string {
-  return `${addr.slice(0, 8)}…${addr.slice(-4)}`
+  return `${addr.slice(0, 6)}…${addr.slice(-4)}`
 }
 </script>
 
@@ -40,21 +40,6 @@ function shortAddr(addr: string): string {
         <span>Meddleware</span>
       </template>
       <template #actions>
-        <span v-if="account" class="wallet-addr" :title="account.address">
-          {{ shortAddr(account.address) }}
-        </span>
-        <button v-if="account" type="button" class="wallet-btn" @click="disconnect">
-          Disconnect
-        </button>
-        <button
-          v-else
-          type="button"
-          class="wallet-btn"
-          :disabled="!wallets.length || connecting"
-          @click="onConnect"
-        >
-          {{ wallets.length ? (connecting ? 'Connecting…' : 'Connect wallet') : 'No wallet' }}
-        </button>
         <StatusWidget />
         <ColorModeControl :model-value="mode" @update:model-value="set" />
       </template>
@@ -72,6 +57,18 @@ function shortAddr(addr: string): string {
           <SidebarItem label="Sealed Storage" icon="🔒" :active="isSealedStorage" @click="navigate" />
         </router-link>
       </nav>
+
+      <template #foot>
+        <div v-if="account" class="wallet-connected">
+          <span class="wallet-addr" :title="account.address">{{ shortAddr(account.address) }}</span>
+          <button type="button" class="wallet-disconnect" @click="disconnect">Disconnect</button>
+        </div>
+        <div v-else class="wallet-disconnected">
+          <p class="wallet-prompt">{{ connecting ? 'Connecting…' : 'Connect wallet' }}</p>
+          <WalletSelector :wallets="wallets" @select="onSelect" />
+        </div>
+        <p class="sidebar-copyright">© {{ new Date().getFullYear() }} Meddleware</p>
+      </template>
     </AppSidebar>
 
     <main class="app-shell__main">
@@ -99,8 +96,6 @@ function shortAddr(addr: string): string {
 }
 
 .app-shell__main {
-  /* Inline tool views can exceed the viewport — scroll the main area internally
-     (the shell itself stays fixed at 100vh). */
   overflow-y: auto;
   height: 100%;
 }
@@ -109,24 +104,54 @@ function shortAddr(addr: string): string {
   color: var(--gold);
 }
 
+/* ── Sidebar wallet foot ───────────────────────────────── */
+.wallet-connected {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
 .wallet-addr {
   font-family: monospace;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.wallet-btn {
+.wallet-disconnect {
   background: none;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.35rem 0.75rem;
+  border: none;
+  padding: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
   cursor: pointer;
-  color: var(--text);
-  font-size: 0.85rem;
+  white-space: nowrap;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
-.wallet-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.wallet-disconnect:hover {
+  color: var(--text);
+}
+
+.wallet-disconnected {
+  margin-bottom: 0.75rem;
+}
+
+.wallet-prompt {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: 0 0 0.5rem;
+}
+
+.sidebar-copyright {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin: 0;
+  opacity: 0.6;
 }
 </style>
