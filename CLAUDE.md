@@ -23,14 +23,15 @@ in the dashboard shell.
 - **SidebarItem comes from `@meddleware/ui`.** Do not create a local copy.
 - **StatusWidget polls `https://status.meddleware.co.uk/api/status` every 60 s** via plain
   `fetch`. No external libraries. Three states: `ok`, `degraded`, `error`.
-- **`overrides.@mysten/sui` must stay.** The Walrus packages (`walrus-ui`, `walrus-relay`,
-  `walrus-client`) all pin `~2.17.0`, but `@meddleware/wallet-adapter`'s peer range
-  (`>=2.17.0 <3`) otherwise lets npm hoist the latest `@mysten/sui` (e.g. 2.29). Two copies of
-  the SDK produce `#private`-mismatch type errors (`Type 'X' is not assignable to type 'X'`) and
-  break `vue-tsc`. The `overrides` block pins the whole tree to the single version the Walrus
-  ecosystem is built against. When a tool needing a newer `@mysten/sui` is embedded (seal-ui is
-  on `^2.28`), bump this override to a version that satisfies every embedded tool — or broaden
-  the Walrus packages' ranges — rather than deleting it.
+- **`overrides.@mysten/sui` (pinned `2.28.0`) must stay.** The embedded tools disagree on the
+  SDK version: the Walrus packages (`walrus-ui`, `walrus-relay`, `walrus-client`) and
+  `access-gate-ui` pin `~2.17.0`, while `seal-ui` + `@mysten/seal` require `^2.28.0`. Two copies
+  of `@mysten/sui` in one tree produce `#private`-mismatch type errors (`Type 'X' is not
+  assignable to type 'X'`) that break `vue-tsc` — the shared `@meddleware/wallet-adapter`
+  `Executor` crosses every tool, so a single version is mandatory. `2.28.0` is chosen because
+  Seal hard-requires it (peer `^2.28.0`) and the Walrus/access-gate packages type-check and build
+  cleanly against it (verified). Do not delete this; if a future tool needs a newer line, bump to
+  a version that satisfies every embedded tool (and re-verify the Walrus build).
 
 ## Dependency order
 
