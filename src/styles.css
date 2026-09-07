@@ -1,43 +1,11 @@
 /*
  * Dashboard app-layout styles. Design tokens + element defaults come from
  * @meddleware/design-tokens + @meddleware/ui/base.css (imported in main.ts).
- * This file holds only the app-shell grid and page-content helpers.
+ * App shell grid layout lives in App.vue scoped styles.
  */
 
 #app {
-  min-height: 100vh;
-}
-
-/*
- * App shell: full-width header on top; sidebar pinned left immediately under the
- * header down to the bottom of the page/viewport; main fills the central space;
- * footer spans from the sidebar's right edge to the viewport's right edge.
- */
-.app-shell {
-  display: grid;
-  grid-template-columns: var(--mw-sidebar-width, 240px) 1fr;
-  grid-template-rows: var(--mw-header-height, 56px) 1fr auto;
-  grid-template-areas:
-    "header header"
-    "sidebar main"
-    "sidebar footer";
-  min-height: 100vh;
-}
-
-.app-shell__header  { grid-area: header; }
-.app-shell__sidebar { grid-area: sidebar; }
-.app-shell__main    { grid-area: main; min-width: 0; padding: 1.5rem; }
-.app-shell__footer  { grid-area: footer; }
-
-@media (max-width: 720px) {
-  .app-shell {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "header"
-      "main"
-      "footer";
-  }
-  .app-shell__sidebar { display: none; }
+  min-height: 100dvh;
 }
 
 .prose {

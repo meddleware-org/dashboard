@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Network selector for the dashboard sidebar. Reads and writes the shared useNetwork()
 // singleton so every embedded tool view reacts to the chosen network immediately.
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { useNetwork } from '@meddleware/wallet-adapter'
 import type { MwNetwork } from '@meddleware/wallet-adapter'
 
@@ -20,6 +20,10 @@ function commitLocalnetUrl(): void {
   const url = localnetInput.value.trim()
   if (url) setLocalnetRpc(url)
 }
+
+onMounted(() => {
+  if (network.value === 'mainnet') setNetwork('testnet')
+})
 </script>
 
 <template>
@@ -27,11 +31,9 @@ function commitLocalnetUrl(): void {
     <label class="ns-label" for="ns-select">Network</label>
     <select id="ns-select" class="ns-select" :value="network" @change="onNetworkChange">
       <option value="testnet">Testnet</option>
-      <option value="mainnet">Mainnet</option>
+      <option value="mainnet" disabled>Mainnet</option>
       <option value="localnet">Localnet</option>
     </select>
-
-    <p v-if="network === 'mainnet'" class="ns-notice">Mainnet coming soon.</p>
 
     <template v-if="network === 'localnet'">
       <label class="ns-label ns-label--url" for="ns-localnet-url">RPC URL</label>
@@ -86,12 +88,6 @@ function commitLocalnetUrl(): void {
 .ns-select:focus {
   outline: 2px solid var(--accent, #6366f1);
   outline-offset: 1px;
-}
-
-.ns-notice {
-  font-size: 0.75rem;
-  color: var(--muted, #888);
-  margin: 0;
 }
 
 .ns-input {

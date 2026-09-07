@@ -78,7 +78,7 @@ const { account, disconnect } = useWallet({
   display: grid;
   grid-template-columns: var(--mw-sidebar-width, 240px) 1fr;
   grid-template-rows: var(--mw-header-height, 56px) 1fr;
-  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
 }
 
@@ -87,13 +87,23 @@ const { account, disconnect } = useWallet({
 }
 
 .app-shell__sidebar {
-  height: 100%;
-  overflow-y: auto;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .app-shell__main {
   overflow-y: auto;
-  height: 100%;
+  min-height: 0;
+}
+
+@media (max-width: 720px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: var(--mw-header-height, 56px) 1fr;
+  }
+  .app-shell__sidebar {
+    display: none;
+  }
 }
 
 .brand-mark {
