@@ -6,7 +6,7 @@ import {
   ColorModeControl, SidebarItem, StatusWidget,
   useColorMode,
 } from '@meddleware/ui'
-import { useWallet, WalletModal } from '@meddleware/wallet-adapter'
+import { useWallet } from '@meddleware/wallet-adapter'
 
 const { mode, set } = useColorMode('dark')
 const route = useRoute()
@@ -58,7 +58,10 @@ function shortAddr(addr: string): string {
           <span class="wallet-addr" :title="account.address">{{ shortAddr(account.address) }}</span>
           <button type="button" class="wallet-disconnect" @click="disconnect">Disconnect</button>
         </div>
-        <WalletModal v-else />
+        <div v-else class="wallet-disconnected">
+          <span class="wallet-status-dot" aria-hidden="true"></span>
+          <span class="wallet-status-label">Not connected</span>
+        </div>
         <p class="sidebar-copyright">© {{ new Date().getFullYear() }} Meddleware</p>
       </template>
     </AppSidebar>
@@ -128,6 +131,26 @@ function shortAddr(addr: string): string {
 
 .wallet-disconnect:hover {
   color: var(--text);
+}
+
+.wallet-disconnected {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.75rem;
+}
+
+.wallet-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--muted, #666);
+  flex-shrink: 0;
+}
+
+.wallet-status-label {
+  font-size: 0.8rem;
+  color: var(--muted);
 }
 
 .sidebar-copyright {
