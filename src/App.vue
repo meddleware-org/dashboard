@@ -6,8 +6,7 @@ import {
   ColorModeControl, SidebarItem, StatusWidget,
   useColorMode,
 } from '@meddleware/ui'
-import { useWallet, WalletSelector } from '@meddleware/wallet-adapter'
-import type { Wallet } from '@mysten/wallet-standard'
+import { useWallet, WalletModal } from '@meddleware/wallet-adapter'
 
 const { mode, set } = useColorMode('dark')
 const route = useRoute()
@@ -19,13 +18,9 @@ const isSealedStorage = computed(() => route.path === '/sealed-storage')
 // The dashboard hosts the single shared wallet connection for every inline tool view. It
 // requests the superset of features the tools need so the connect control only offers wallets
 // capable of every operation; individual tools still feature-guard at call time.
-const { wallets, account, connect, disconnect, connecting } = useWallet({
+const { account, disconnect } = useWallet({
   requiredFeatures: ['sui:signTransaction', 'sui:signPersonalMessage'],
 })
-
-async function onSelect(w: Wallet): Promise<void> {
-  await connect(w)
-}
 
 function shortAddr(addr: string): string {
   return `${addr.slice(0, 6)}…${addr.slice(-4)}`
@@ -63,10 +58,7 @@ function shortAddr(addr: string): string {
           <span class="wallet-addr" :title="account.address">{{ shortAddr(account.address) }}</span>
           <button type="button" class="wallet-disconnect" @click="disconnect">Disconnect</button>
         </div>
-        <div v-else class="wallet-disconnected">
-          <p class="wallet-prompt">{{ connecting ? 'Connecting…' : 'Connect wallet' }}</p>
-          <WalletSelector :wallets="wallets" @select="onSelect" />
-        </div>
+        <WalletModal v-else />
         <p class="sidebar-copyright">© {{ new Date().getFullYear() }} Meddleware</p>
       </template>
     </AppSidebar>
@@ -136,16 +128,6 @@ function shortAddr(addr: string): string {
 
 .wallet-disconnect:hover {
   color: var(--text);
-}
-
-.wallet-disconnected {
-  margin-bottom: 0.75rem;
-}
-
-.wallet-prompt {
-  font-size: 0.8rem;
-  color: var(--muted);
-  margin: 0 0 0.5rem;
 }
 
 .sidebar-copyright {
