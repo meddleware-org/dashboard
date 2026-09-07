@@ -3,10 +3,11 @@ import { computed } from 'vue'
 import { useRoute, RouterView } from 'vue-router'
 import {
   AppHeader, AppSidebar,
-  ColorModeControl, SidebarItem, StatusWidget,
+  ColorModeControl, SidebarItem, StatusWidget, CopyableAddress,
   useColorMode,
 } from '@meddleware/ui'
 import { useWallet } from '@meddleware/wallet-adapter'
+import NetworkSelector from './components/NetworkSelector.vue'
 
 const { mode, set } = useColorMode('dark')
 const route = useRoute()
@@ -21,10 +22,6 @@ const isSealedStorage = computed(() => route.path === '/sealed-storage')
 const { account, disconnect } = useWallet({
   requiredFeatures: ['sui:signTransaction', 'sui:signPersonalMessage'],
 })
-
-function shortAddr(addr: string): string {
-  return `${addr.slice(0, 6)}…${addr.slice(-4)}`
-}
 </script>
 
 <template>
@@ -35,7 +32,6 @@ function shortAddr(addr: string): string {
         <span>Meddleware</span>
       </template>
       <template #actions>
-        <StatusWidget />
         <ColorModeControl :model-value="mode" @update:model-value="set" />
       </template>
     </AppHeader>
@@ -53,9 +49,14 @@ function shortAddr(addr: string): string {
         </router-link>
       </nav>
 
+      <template #body>
+        <NetworkSelector />
+      </template>
+
       <template #foot>
+        <StatusWidget class="sidebar-status" />
         <div v-if="account" class="wallet-connected">
-          <span class="wallet-addr" :title="account.address">{{ shortAddr(account.address) }}</span>
+          <CopyableAddress :address="account.address" />
           <button type="button" class="wallet-disconnect" @click="disconnect">Disconnect</button>
         </div>
         <div v-else class="wallet-disconnected">
@@ -99,22 +100,17 @@ function shortAddr(addr: string): string {
   color: var(--gold);
 }
 
-/* ── Sidebar wallet foot ───────────────────────────────── */
+/* ── Sidebar foot ──────────────────────────────────────── */
+.sidebar-status {
+  margin-bottom: 0.5rem;
+}
+
 .wallet-connected {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
   margin-bottom: 0.75rem;
-}
-
-.wallet-addr {
-  font-family: monospace;
-  font-size: 0.8rem;
-  color: var(--muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .wallet-disconnect {
