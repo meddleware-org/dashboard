@@ -56,18 +56,19 @@ const { account, disconnect } = useWallet({
       </nav>
 
       <template #body>
+        <NetworkSelector />
+      </template>
+
+      <template #foot>
         <div v-if="account" class="wallet-connected">
           <CopyableAddress :address="account.address" />
           <button type="button" class="wallet-disconnect" @click="disconnect">Disconnect</button>
         </div>
         <div v-else class="wallet-disconnected">
           <span class="wallet-status-dot" aria-hidden="true"></span>
-          <span class="wallet-status-label">Not connected</span>
+          <span class="wallet-status-label">No wallet connected</span>
         </div>
-        <NetworkSelector />
-      </template>
-
-      <template #foot>
+        <hr class="sidebar-divider" aria-hidden="true" />
         <StatusWidget class="sidebar-status" />
         <p class="sidebar-copyright">© {{ new Date().getFullYear() }} Meddleware</p>
       </template>
@@ -126,8 +127,14 @@ const { account, disconnect } = useWallet({
 }
 
 /* ── Sidebar foot ──────────────────────────────────────── */
+.sidebar-divider {
+  border: none;
+  border-top: 1px solid var(--border, #333);
+  margin: 0.5rem 0;
+}
+
 .sidebar-status {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .wallet-connected {
@@ -135,7 +142,7 @@ const { account, disconnect } = useWallet({
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .wallet-disconnect {
@@ -158,7 +165,7 @@ const { account, disconnect } = useWallet({
   display: flex;
   align-items: center;
   gap: 0.45rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .wallet-status-dot {
