@@ -31,7 +31,7 @@ onMounted(() => {
     <label class="ns-label" for="ns-select">Network</label>
     <select id="ns-select" class="ns-select" :value="network" @change="onNetworkChange">
       <option value="testnet">Testnet</option>
-      <option value="mainnet" disabled>Mainnet</option>
+      <option value="mainnet" disabled title="Coming soon">Mainnet</option>
       <option value="localnet">Localnet</option>
     </select>
 

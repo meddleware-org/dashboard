@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRoute, RouterView } from 'vue-router'
+import { useRoute, RouterView, RouterLink } from 'vue-router'
 import {
   AppHeader, AppSidebar,
   ColorModeControl, SidebarItem, StatusWidget, CopyableAddress,
@@ -12,6 +12,7 @@ import NetworkSelector from './components/NetworkSelector.vue'
 const { mode, set } = useColorMode('dark')
 const route = useRoute()
 
+const isHome = computed(() => route.path === '/')
 const isWalrus = computed(() => route.path === '/walrus')
 const isAccessGate = computed(() => route.path === '/access-gate')
 const isSealedStorage = computed(() => route.path === '/sealed-storage')
@@ -28,8 +29,10 @@ const { account, disconnect } = useWallet({
   <div class="app-shell">
     <AppHeader class="app-shell__header" variant="dark">
       <template #brand>
-        <span class="brand-mark" aria-hidden="true">◆</span>
-        <span>Meddleware</span>
+        <RouterLink to="/" class="brand-link">
+          <span class="brand-mark" aria-hidden="true">◆</span>
+          <span>Meddleware</span>
+        </RouterLink>
       </template>
       <template #actions>
         <ColorModeControl :model-value="mode" @update:model-value="set" />
@@ -38,6 +41,9 @@ const { account, disconnect } = useWallet({
 
     <AppSidebar class="app-shell__sidebar" variant="dark">
       <nav aria-label="Tools">
+        <router-link to="/" custom v-slot="{ navigate }">
+          <SidebarItem label="Home" icon="🏠" :active="isHome" @click="navigate" />
+        </router-link>
         <router-link to="/walrus" custom v-slot="{ navigate }">
           <SidebarItem label="Walrus" icon="🗄" :active="isWalrus" @click="navigate" />
         </router-link>
@@ -50,11 +56,6 @@ const { account, disconnect } = useWallet({
       </nav>
 
       <template #body>
-        <NetworkSelector />
-      </template>
-
-      <template #foot>
-        <StatusWidget class="sidebar-status" />
         <div v-if="account" class="wallet-connected">
           <CopyableAddress :address="account.address" />
           <button type="button" class="wallet-disconnect" @click="disconnect">Disconnect</button>
@@ -63,6 +64,11 @@ const { account, disconnect } = useWallet({
           <span class="wallet-status-dot" aria-hidden="true"></span>
           <span class="wallet-status-label">Not connected</span>
         </div>
+        <NetworkSelector />
+      </template>
+
+      <template #foot>
+        <StatusWidget class="sidebar-status" />
         <p class="sidebar-copyright">© {{ new Date().getFullYear() }} Meddleware</p>
       </template>
     </AppSidebar>
@@ -94,6 +100,7 @@ const { account, disconnect } = useWallet({
 .app-shell__main {
   overflow-y: auto;
   min-height: 0;
+  padding: 6px;
 }
 
 @media (max-width: 720px) {
@@ -104,6 +111,14 @@ const { account, disconnect } = useWallet({
   .app-shell__sidebar {
     display: none;
   }
+}
+
+.brand-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: inherit;
+  text-decoration: none;
 }
 
 .brand-mark {
@@ -164,5 +179,6 @@ const { account, disconnect } = useWallet({
   color: var(--muted);
   margin: 0;
   opacity: 0.6;
+  text-align: center;
 }
 </style>
