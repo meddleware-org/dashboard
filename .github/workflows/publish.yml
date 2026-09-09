@@ -120,6 +120,14 @@ jobs:
           provenance: mode=max
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            VITE_NETWORK=${{ vars.VITE_NETWORK || 'testnet' }}
+            VITE_WALRUS_RELAY_TESTNET=${{ vars.VITE_WALRUS_RELAY_TESTNET }}
+            VITE_WALRUS_RELAY_MAINNET=${{ vars.VITE_WALRUS_RELAY_MAINNET }}
+            VITE_ACCESS_GATE_ID_TESTNET=${{ vars.VITE_ACCESS_GATE_ID_TESTNET }}
+            VITE_ACCESS_GATE_SOULBOUND_TESTNET=${{ vars.VITE_ACCESS_GATE_SOULBOUND_TESTNET }}
+            VITE_ACCESS_GATE_PRICE_MIST_TESTNET=${{ vars.VITE_ACCESS_GATE_PRICE_MIST_TESTNET }}
+            VITE_UPLOAD_RELAY_MAX_TIP_MIST=${{ vars.VITE_UPLOAD_RELAY_MAX_TIP_MIST }}
 
       - uses: sigstore/cosign-installer@v4.1.2
 
@@ -191,3 +199,10 @@ jobs:
           provenance: mode=max
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            VITE_NETWORK=${{ vars.VITE_NETWORK || 'testnet' }}
+            VITE_WALRUS_RELAY_TESTNET=${{ vars.VITE_WALRUS_RELAY_TESTNET }}
+            VITE_ACCESS_GATE_ID_TESTNET=${{ vars.VITE_ACCESS_GATE_ID_TESTNET }}
+            VITE_ACCESS_GATE_SOULBOUND_TESTNET=${{ vars.VITE_ACCESS_GATE_SOULBOUND_TESTNET }}
+            VITE_ACCESS_GATE_PRICE_MIST_TESTNET=${{ vars.VITE_ACCESS_GATE_PRICE_MIST_TESTNET }}
+            VITE_UPLOAD_RELAY_MAX_TIP_MIST=${{ vars.VITE_UPLOAD_RELAY_MAX_TIP_MIST }}
