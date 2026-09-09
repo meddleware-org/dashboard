@@ -56,7 +56,7 @@ const { account, disconnect } = useWallet({
       </nav>
 
       <template #body>
-        <NetworkSelector />
+        <NetworkSelector v-if="account" />
       </template>
 
       <template #foot>
