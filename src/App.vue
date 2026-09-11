@@ -3,14 +3,15 @@ import { computed } from 'vue'
 import { useRoute, RouterView, RouterLink } from 'vue-router'
 import {
   AppHeader, AppSidebar,
-  ColorModeControl, SidebarItem, StatusWidget, CopyableAddress,
-  useColorMode,
+  ColorModeControl, SidebarItem, StatusWidget, CopyableAddress, ExplorerLink,
+  suiExplorerUrl, useColorMode,
 } from '@meddleware/ui'
-import { useWallet } from '@meddleware/wallet-adapter'
+import { useWallet, useNetwork } from '@meddleware/wallet-adapter'
 import NetworkSelector from './components/NetworkSelector.vue'
 
 const { mode, set } = useColorMode('dark')
 const route = useRoute()
+const { network } = useNetwork()
 
 const isHome = computed(() => route.path === '/')
 const isWalrus = computed(() => route.path === '/walrus')
@@ -23,6 +24,14 @@ const isSealedStorage = computed(() => route.path === '/sealed-storage')
 const { account, disconnect } = useWallet({
   requiredFeatures: ['sui:signTransaction', 'sui:signPersonalMessage'],
 })
+
+// SuiVision has no localnet explorer, so only build a link for public networks; otherwise the
+// address is shown copy-only.
+const accountExplorerHref = computed(() =>
+  account.value && network.value !== 'localnet'
+    ? suiExplorerUrl('account', account.value.address, network.value as 'testnet' | 'mainnet' | 'devnet')
+    : null,
+)
 </script>
 
 <template>
@@ -61,7 +70,13 @@ const { account, disconnect } = useWallet({
 
       <template #foot>
         <div v-if="account" class="wallet-connected">
-          <CopyableAddress :address="account.address" />
+          <CopyableAddress :address="account.address">
+            <ExplorerLink
+              v-if="accountExplorerHref"
+              :href="accountExplorerHref"
+              :value="account.address"
+            />
+          </CopyableAddress>
           <button type="button" class="wallet-disconnect" @click="disconnect">Disconnect</button>
         </div>
         <div v-else class="wallet-disconnected">
