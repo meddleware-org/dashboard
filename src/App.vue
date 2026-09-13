@@ -13,7 +13,7 @@ const { mode, set } = useColorMode('dark')
 const route = useRoute()
 const { network } = useNetwork()
 
-const isHome = computed(() => route.path === '/')
+const isDao = computed(() => route.path === '/')
 const isWalrus = computed(() => route.path === '/walrus')
 const isAccessGate = computed(() => route.path === '/access-gate')
 const isSealedStorage = computed(() => route.path === '/sealed-storage')
@@ -51,7 +51,7 @@ const accountExplorerHref = computed(() =>
     <AppSidebar class="app-shell__sidebar" variant="dark">
       <nav aria-label="Tools">
         <router-link to="/" custom v-slot="{ navigate }">
-          <SidebarItem label="Home" icon="🏠" :active="isHome" @click="navigate" />
+          <SidebarItem label="DAO" icon="🏛" :active="isDao" @click="navigate" />
         </router-link>
         <router-link to="/walrus" custom v-slot="{ navigate }">
           <SidebarItem label="Walrus" icon="🗄" :active="isWalrus" @click="navigate" />
