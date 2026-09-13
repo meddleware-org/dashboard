@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@meddleware/access-gate-ui": "^0.1.9",
-    "@meddleware/dao-ui": "^0.1.1",
+    "@meddleware/dao-ui": "^0.1.2",
     "@meddleware/design-tokens": "^0.1.2",
     "@meddleware/seal-ui": "^0.0.9",
     "@meddleware/ui": "^0.1.10",
