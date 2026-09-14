@@ -54,13 +54,13 @@ const accountExplorerHref = computed(() =>
           <SidebarItem label="DAO" icon="🏛" :active="isDao" @click="navigate" />
         </router-link>
         <router-link to="/walrus" custom v-slot="{ navigate }">
-          <SidebarItem label="Walrus" icon="🗄" :active="isWalrus" @click="navigate" />
-        </router-link>
-        <router-link to="/access-gate" custom v-slot="{ navigate }">
-          <SidebarItem label="Access Gate" icon="🔐" :active="isAccessGate" @click="navigate" />
+          <SidebarItem label="Walrus Storage" icon="🗄" :active="isWalrus" @click="navigate" />
         </router-link>
         <router-link to="/sealed-storage" custom v-slot="{ navigate }">
           <SidebarItem label="Sealed Storage" icon="🔒" :active="isSealedStorage" @click="navigate" />
+        </router-link>
+        <router-link to="/access-gate" custom v-slot="{ navigate }">
+          <SidebarItem label="Access Gate" icon="🔐" :active="isAccessGate" @click="navigate" />
         </router-link>
       </nav>
 
