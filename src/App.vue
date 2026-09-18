@@ -25,6 +25,8 @@ const { account, disconnect } = useWallet({
   requiredFeatures: ['sui:signTransaction', 'sui:signPersonalMessage'],
 })
 
+const DOCS_URL = import.meta.env.VITE_DOCS_URL || 'https://docs.meddleware.co.uk/'
+
 // SuiVision has no localnet explorer, so only build a link for public networks; otherwise the
 // address is shown copy-only.
 const accountExplorerHref = computed(() =>
@@ -85,7 +87,7 @@ const accountExplorerHref = computed(() =>
         </div>
         <hr class="sidebar-divider" aria-hidden="true" />
         <StatusWidget class="sidebar-status" />
-        <p class="sidebar-copyright">© {{ new Date().getFullYear() }} Meddleware</p>
+        <p class="sidebar-copyright">© {{ new Date().getFullYear() }} Meddleware · <a :href="DOCS_URL" target="_blank" rel="noopener noreferrer" class="sidebar-docs-link">Documentation</a></p>
       </template>
     </AppSidebar>
 
@@ -202,5 +204,11 @@ const accountExplorerHref = computed(() =>
   margin: 0;
   opacity: 0.6;
   text-align: center;
+}
+
+.sidebar-docs-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 </style>
