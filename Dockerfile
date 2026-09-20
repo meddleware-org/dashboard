@@ -4,7 +4,7 @@
 # ^0.1.3 before building this image.
 #
 #   docker build -t dashboard:<tag> .
-FROM node:22-slim AS build
+FROM node:24-slim AS build
 
 WORKDIR /app
 

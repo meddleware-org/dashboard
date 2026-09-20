@@ -26,6 +26,7 @@ const { account, disconnect } = useWallet({
 })
 
 const DOCS_URL = import.meta.env.VITE_DOCS_URL || 'https://docs.meddleware.co.uk/'
+const DEV_URL  = import.meta.env.VITE_DEV_URL  || 'https://dev.meddleware.co.uk/'
 
 // SuiVision has no localnet explorer, so only build a link for public networks; otherwise the
 // address is shown copy-only.
@@ -87,7 +88,7 @@ const accountExplorerHref = computed(() =>
         </div>
         <hr class="sidebar-divider" aria-hidden="true" />
         <StatusWidget class="sidebar-status" />
-        <p class="sidebar-copyright">© {{ new Date().getFullYear() }} Meddleware · <a :href="DOCS_URL" target="_blank" rel="noopener noreferrer" class="sidebar-docs-link">Documentation</a></p>
+        <p class="sidebar-copyright">© {{ new Date().getFullYear() }} Meddleware · <a :href="DOCS_URL" target="_blank" rel="noopener noreferrer" class="sidebar-docs-link">Documentation</a> · <a :href="DEV_URL" target="_blank" rel="noopener noreferrer" class="sidebar-docs-link">Developer docs</a></p>
       </template>
     </AppSidebar>
 
@@ -140,7 +141,7 @@ const accountExplorerHref = computed(() =>
 }
 
 .brand-mark {
-  color: var(--gold);
+  color: var(--accent);
 }
 
 /* ── Sidebar foot ──────────────────────────────────────── */
