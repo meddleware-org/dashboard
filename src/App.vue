@@ -3,13 +3,13 @@ import { computed } from 'vue'
 import { useRoute, RouterView, RouterLink } from 'vue-router'
 import {
   AppHeader, AppSidebar,
-  ColorModeControl, SidebarItem, StatusWidget, CopyableAddress, ExplorerLink,
+  ColorModeControl, SidebarItem, StatusWidget, CopyableAddress, ExplorerLink, CopyrightLine,
   suiExplorerUrl, useColorMode,
 } from '@meddleware/ui'
 import { useWallet, useNetwork } from '@meddleware/wallet-adapter'
 import NetworkSelector from './components/NetworkSelector.vue'
 
-const { mode, set } = useColorMode('dark')
+const { mode } = useColorMode('dark')
 const route = useRoute()
 const { network } = useNetwork()
 
@@ -47,7 +47,7 @@ const accountExplorerHref = computed(() =>
         </RouterLink>
       </template>
       <template #actions>
-        <ColorModeControl :model-value="mode" @update:model-value="set" />
+        <ColorModeControl v-model="mode" />
       </template>
     </AppHeader>
 
@@ -88,7 +88,13 @@ const accountExplorerHref = computed(() =>
         </div>
         <hr class="sidebar-divider" aria-hidden="true" />
         <StatusWidget class="sidebar-status" />
-        <p class="sidebar-copyright">© {{ new Date().getFullYear() }} Meddleware · <a :href="DOCS_URL" target="_blank" rel="noopener noreferrer" class="sidebar-docs-link">Documentation</a> · <a :href="DEV_URL" target="_blank" rel="noopener noreferrer" class="sidebar-docs-link">Developer docs</a></p>
+        <div class="sidebar-copyright">
+          <CopyrightLine symbolVariant="kopimi" organisation-name="Meddleware" rightsStatement="jam" />
+          <span class="sidebar-docs-links">
+            <a :href="DOCS_URL" target="_blank" rel="noopener noreferrer" class="sidebar-docs-link">Documentation</a>
+            <a :href="DEV_URL" target="_blank" rel="noopener noreferrer" class="sidebar-docs-link">Developer docs</a>
+          </span>
+        </div>
       </template>
     </AppSidebar>
 
@@ -200,11 +206,19 @@ const accountExplorerHref = computed(() =>
 }
 
 .sidebar-copyright {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   font-size: 0.75rem;
   color: var(--muted);
-  margin: 0;
   opacity: 0.6;
   text-align: center;
+}
+
+.sidebar-docs-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .sidebar-docs-link {
