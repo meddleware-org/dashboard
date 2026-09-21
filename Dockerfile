@@ -43,7 +43,7 @@ RUN npm run build
 # ── runtime stage ─────────────────────────────────────────────────────────────
 # static-server is a minimal Go binary image. SPA_FALLBACK serves index.html
 # for any extensionless path (Vue Router history mode).
-FROM quay.io/meddleware-org/static-server:0.1.0
+FROM quay.io/meddleware-org/static-server:0.1.1
 
 COPY --from=build /app/dist /app/public
 
