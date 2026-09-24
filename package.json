@@ -27,11 +27,12 @@
     "access": "public"
   },
   "dependencies": {
-    "@meddleware/access-gate-ui": "^0.1.16",
+    "@meddleware/access-gate-ui": "^0.1.17",
     "@meddleware/dao-ui": "^0.1.13",
     "@meddleware/design-tokens": "^0.1.5",
     "@meddleware/seal-ui": "^0.0.17",
-    "@meddleware/ui": "^0.1.20",
+    "@meddleware/ui": "^0.1.21",
+    "@meddleware/token-deployer-sui": "file:../token-deployer-sui",
     "@meddleware/wallet-adapter": "^0.0.7",
     "@meddleware/walrus-ui": "^0.1.36",
     "pinia": "^4.0.3",
@@ -39,7 +40,7 @@
     "vue-router": "^5.3.0"
   },
   "overrides": {
-    "@mysten/sui": "2.31.0"
+    "@mysten/sui": "2.31.3"
   },
   "devDependencies": {
     "@types/node": "~24.12.2",

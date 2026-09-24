@@ -2,10 +2,12 @@
 
 ## What this app is
 
-A Vue 3 + Vite SPA serving as the Meddleware tools hub at `sui.meddleware.co.uk`. It renders
-each tool (Walrus, Access Gate, Sealed Storage) **inline** by importing the tool's view
+A Vue 3 + Vite SPA serving as the chain-agnostic Meddleware tools hub at
+`dash.meddleware.co.uk`. It renders each tool inline by importing the tool's exported view
 component from its own package (e.g. `WalrusView` from `@meddleware/walrus-ui`) and wrapping it
-in the dashboard shell.
+in the dashboard shell. The sidebar organises tools under a two-tier hierarchy
+(Blockchain → chain → tool) so adding tools for new chains requires only a new
+`SidebarGroup level="2"` block — no structural changes to the existing navigation.
 
 ## Architectural invariants
 
@@ -20,7 +22,11 @@ in the dashboard shell.
   wallet extensions don't inject into them). Tool routes are lazy (`() => import(...)`) so each
   tool's deps (incl. the Walrus wasm) load only on navigation.
 - **No accounting logic.** Financial truth lives on-chain; this app derives none of it.
-- **SidebarItem comes from `@meddleware/ui`.** Do not create a local copy.
+- **Sidebar navigation components come from `@meddleware/ui`.** Use `SidebarItem` for
+  individual entries and `SidebarGroup` for section headers. Do not create local copies.
+  The sidebar is structured as `<SidebarGroup level="1">` (chain family, e.g. "Blockchain")
+  containing `<SidebarGroup level="2">` (specific chain, e.g. "Sui") containing
+  `<SidebarItem>` entries. Add a new `level="2"` group when onboarding a new chain.
 - **StatusWidget polls `https://status.meddleware.co.uk/api/status` every 60 s** via plain
   `fetch`. No external libraries. Three states: `ok`, `degraded`, `error`.
 - **`overrides.@mysten/sui` (pinned `2.31.0`) must stay.** The embedded tools disagree on the

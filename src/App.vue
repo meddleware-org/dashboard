@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useRoute, RouterView, RouterLink } from 'vue-router'
 import {
   AppHeader, AppSidebar,
-  ColorModeControl, SidebarItem, StatusWidget, CopyableAddress, ExplorerLink, CopyrightLine,
+  ColorModeControl, SidebarItem, SidebarGroup, StatusWidget, CopyableAddress, ExplorerLink, CopyrightLine,
   suiExplorerUrl, useColorMode,
 } from '@meddleware/ui'
 import { useWallet, useNetwork } from '@meddleware/wallet-adapter'
@@ -17,6 +17,7 @@ const isDao = computed(() => route.path === '/')
 const isWalrus = computed(() => route.path === '/walrus')
 const isAccessGate = computed(() => route.path === '/access-gate')
 const isSealedStorage = computed(() => route.path === '/sealed-storage')
+const isTokenDeployer = computed(() => route.path === '/token-deployer')
 
 // The dashboard hosts the single shared wallet connection for every inline tool view. It
 // requests the superset of features the tools need so the connect control only offers wallets
@@ -52,20 +53,25 @@ const accountExplorerHref = computed(() =>
     </AppHeader>
 
     <AppSidebar class="app-shell__sidebar" variant="dark">
-      <nav aria-label="Tools">
-        <router-link to="/" custom v-slot="{ navigate }">
-          <SidebarItem label="DAO" icon="🏛" :active="isDao" @click="navigate" />
-        </router-link>
-        <router-link to="/walrus" custom v-slot="{ navigate }">
-          <SidebarItem label="Walrus Storage" icon="🗄" :active="isWalrus" @click="navigate" />
-        </router-link>
-        <router-link to="/sealed-storage" custom v-slot="{ navigate }">
-          <SidebarItem label="Sealed Storage" icon="🔒" :active="isSealedStorage" @click="navigate" />
-        </router-link>
-        <router-link to="/access-gate" custom v-slot="{ navigate }">
-          <SidebarItem label="Access Gate" icon="🔐" :active="isAccessGate" @click="navigate" />
-        </router-link>
-      </nav>
+      <SidebarGroup label="Blockchain" :level="1">
+        <SidebarGroup label="Sui" :level="2">
+          <router-link to="/" custom v-slot="{ navigate }">
+            <SidebarItem label="DAO" icon="🏛" :active="isDao" @click="navigate" />
+          </router-link>
+          <router-link to="/walrus" custom v-slot="{ navigate }">
+            <SidebarItem label="Walrus Storage" icon="🗄" :active="isWalrus" @click="navigate" />
+          </router-link>
+          <router-link to="/sealed-storage" custom v-slot="{ navigate }">
+            <SidebarItem label="Sealed Storage" icon="🔒" :active="isSealedStorage" @click="navigate" />
+          </router-link>
+          <router-link to="/access-gate" custom v-slot="{ navigate }">
+            <SidebarItem label="Access Gate" icon="🔐" :active="isAccessGate" @click="navigate" />
+          </router-link>
+          <router-link to="/token-deployer" custom v-slot="{ navigate }">
+            <SidebarItem label="Token Deployer" icon="🪙" :active="isTokenDeployer" @click="navigate" />
+          </router-link>
+        </SidebarGroup>
+      </SidebarGroup>
 
       <template #body>
         <NetworkSelector v-if="account" />

@@ -22,6 +22,10 @@ const router = createRouter({
       path: '/sealed-storage',
       component: () => import('@meddleware/seal-ui').then((m) => m.SealView),
     },
+    {
+      path: '/token-deployer',
+      component: () => import('@meddleware/token-deployer-sui').then((m) => m.TokenDeployerView),
+    },
   ],
 })
 
