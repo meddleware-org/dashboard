@@ -24,7 +24,7 @@ const router = createRouter({
     },
     {
       path: '/token-deployer',
-      component: () => import('@meddleware/token-deployer-sui').then((m) => m.TokenDeployerView),
+      component: () => import('@meddleware/token-deployer-ui').then((m) => m.TokenDeployerView),
     },
   ],
 })
