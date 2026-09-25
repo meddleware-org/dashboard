@@ -28,10 +28,10 @@
   },
   "dependencies": {
     "@meddleware/access-gate-ui": "^0.1.18",
-    "@meddleware/dao-ui": "^0.1.17",
+    "@meddleware/dao-ui": "^0.1.18",
     "@meddleware/design-tokens": "^0.1.6",
     "@meddleware/seal-ui": "^0.0.19",
-    "@meddleware/token-deployer-ui": "0.0.6",
+    "@meddleware/token-deployer-ui": "0.0.7",
     "@meddleware/ui": "^0.1.26",
     "@meddleware/wallet-adapter": "^0.0.8",
     "@meddleware/walrus-ui": "^0.1.39",
