@@ -32,6 +32,7 @@
     "@meddleware/design-tokens": "^0.1.6",
     "@meddleware/seal-ui": "^0.0.19",
     "@meddleware/token-deployer-ui": "0.0.7",
+    "@meddleware/treasury-ui": "^0.0.1",
     "@meddleware/ui": "^0.1.26",
     "@meddleware/wallet-adapter": "^0.0.8",
     "@meddleware/walrus-ui": "^0.1.39",

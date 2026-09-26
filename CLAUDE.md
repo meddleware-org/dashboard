@@ -2,12 +2,31 @@
 
 ## What this app is
 
-A Vue 3 + Vite SPA serving as the chain-agnostic Meddleware tools hub at
-`dash.meddleware.co.uk`. It renders each tool inline by importing the tool's exported view
-component from its own package (e.g. `WalrusView` from `@meddleware/walrus-ui`) and wrapping it
-in the dashboard shell. The sidebar organises tools under a two-tier hierarchy
-(Blockchain → chain → tool) so adding tools for new chains requires only a new
-`SidebarGroup level="2"` block — no structural changes to the existing navigation.
+A Vue 3 + Vite SPA serving as the organisation-level Meddleware hub at
+`dash.meddleware.co.uk`. It renders each tool/view inline by importing the exported component
+from its own package (e.g. `TreasuryView` from `@meddleware/treasury-ui`, `WalrusView` from
+`@meddleware/walrus-ui`) and wrapping it in the dashboard shell.
+
+### Information architecture (two org sections + a drill-down)
+
+The sidebar has two **modes**:
+
+- **Top level** — organisation sections. Currently **Treasury** (the default route `/`, embedding
+  `TreasuryView`) and **Blockchain**. Room for more general-org sections later.
+- **Blockchain mode** — entered by clicking the *Blockchain* item. The sidebar swaps to a modular
+  **chain selector** (`ChainSelector`, defaults to Sui, data-driven for future chains) plus an
+  **up-one-level** ("← Back") control that returns to the top level *without leaving the page*.
+  The content area (`/blockchain`, `views/BlockchainView.vue`) is a **qt-style tabbed console**
+  (`AppTabNav variant="raised"`) whose tabs are the Sui tools — Walrus Storage, Sealed Storage,
+  Access Gate, Token Deployer — each lazy-loaded and kept alive across tab switches.
+
+Sidebar mode is local UI state (`sidebarView: 'top' | 'blockchain'`), not a route: clicking
+*Blockchain* while already on `/blockchain` just re-opens the selector (no reload); *up one level*
+only changes the sidebar. Legacy per-tool paths (`/walrus`, …) redirect to `/blockchain`.
+
+**DAO is temporarily retired** from the dashboard: its route is commented out in `router/index.ts`
+and the `@meddleware/dao-ui` dependency is **retained** so it can be re-enabled once DAO
+participation ships. Do not remove the dependency.
 
 ## Architectural invariants
 
@@ -22,11 +41,14 @@ in the dashboard shell. The sidebar organises tools under a two-tier hierarchy
   wallet extensions don't inject into them). Tool routes are lazy (`() => import(...)`) so each
   tool's deps (incl. the Walrus wasm) load only on navigation.
 - **No accounting logic.** Financial truth lives on-chain; this app derives none of it.
-- **Sidebar navigation components come from `@meddleware/ui`.** Use `SidebarItem` for
-  individual entries and `SidebarGroup` for section headers. Do not create local copies.
-  The sidebar is structured as `<SidebarGroup level="1">` (chain family, e.g. "Blockchain")
-  containing `<SidebarGroup level="2">` (specific chain, e.g. "Sui") containing
-  `<SidebarItem>` entries. Add a new `level="2"` group when onboarding a new chain.
+- **Sidebar navigation components come from `@meddleware/ui`.** Use `SidebarItem` for entries
+  (and `SidebarGroup` if a mode ever needs grouped headers). Do not create local copies. The
+  sidebar renders one of two modes (see IA above): top-level org sections, or the Blockchain
+  chain-selector. Onboarding a new chain = a new entry in `ChainSelector`'s `CHAINS` array plus a
+  new tool set in `BlockchainView`'s `TOOLSETS` — no shell changes.
+- **qt-style tabbed tools.** The Blockchain view uses the shared `AppTabNav variant="raised"`
+  (desktop-console tabs) over lazy, kept-alive tool views. Do not give each tool its own route;
+  they are tabs within `/blockchain`.
 - **StatusWidget polls `https://status.meddleware.co.uk/api/status` every 60 s** via plain
   `fetch`. No external libraries. Three states: `ok`, `degraded`, `error`.
 - **`overrides.@mysten/sui` (pinned `2.31.0`) must stay.** The embedded tools disagree on the

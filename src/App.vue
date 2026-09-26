@@ -1,23 +1,55 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute, RouterView, RouterLink } from 'vue-router'
+import { computed, ref, watch } from 'vue'
+import { useRoute, useRouter, RouterView, RouterLink } from 'vue-router'
 import {
   AppHeader, AppSidebar,
-  ColorModeControl, SidebarItem, SidebarGroup, StatusWidget, CopyableAddress, ExplorerLink, CopyrightLine,
+  ColorModeControl, SidebarItem, StatusWidget, CopyableAddress, ExplorerLink, CopyrightLine,
   suiExplorerUrl, useColorMode,
 } from '@meddleware/ui'
 import { useWallet, useNetwork } from '@meddleware/wallet-adapter'
 import NetworkSelector from './components/NetworkSelector.vue'
+import ChainSelector from './components/ChainSelector.vue'
 
 const { mode } = useColorMode('dark')
 const route = useRoute()
+const router = useRouter()
 const { network } = useNetwork()
 
-const isDao = computed(() => route.path === '/')
-const isWalrus = computed(() => route.path === '/walrus')
-const isAccessGate = computed(() => route.path === '/access-gate')
-const isSealedStorage = computed(() => route.path === '/sealed-storage')
-const isTokenDeployer = computed(() => route.path === '/token-deployer')
+// The sidebar has two modes. Top-level shows the organisation sections (Treasury, Blockchain).
+// Entering the Blockchain section swaps the sidebar to a chain selector with an up-one-level
+// control that returns to the top level without leaving the page.
+type SidebarView = 'top' | 'blockchain'
+const sidebarView = ref<SidebarView>(route.path === '/blockchain' ? 'blockchain' : 'top')
+const selectedChain = ref('sui')
+
+const isTreasury = computed(() => route.path === '/')
+const isBlockchain = computed(() => route.path === '/blockchain')
+
+function goTreasury(navigate?: () => void): void {
+  sidebarView.value = 'top'
+  if (navigate) navigate()
+  else router.push('/')
+}
+
+function enterBlockchain(): void {
+  // No-op navigation if already on /blockchain (vue-router won't reload the same route);
+  // either way the sidebar switches to the chain selector.
+  sidebarView.value = 'blockchain'
+  if (route.path !== '/blockchain') router.push('/blockchain')
+}
+
+function upOneLevel(): void {
+  // Return the sidebar to the top level without navigating away from the current page.
+  sidebarView.value = 'top'
+}
+
+// Keep the sidebar sensible on external route changes (redirects, back/forward).
+watch(
+  () => route.path,
+  (p) => {
+    if (p !== '/blockchain' && sidebarView.value === 'blockchain') sidebarView.value = 'top'
+  },
+)
 
 // The dashboard hosts the single shared wallet connection for every inline tool view. It
 // requests the superset of features the tools need so the connect control only offers wallets
@@ -42,7 +74,7 @@ const accountExplorerHref = computed(() =>
   <div class="app-shell">
     <AppHeader class="app-shell__header" variant="dark">
       <template #brand>
-        <RouterLink to="/" class="brand-link">
+        <RouterLink to="/" class="brand-link" @click="goTreasury()">
           <span class="brand-mark" aria-hidden="true">◆</span>
           <span>Meddleware</span>
         </RouterLink>
@@ -53,25 +85,21 @@ const accountExplorerHref = computed(() =>
     </AppHeader>
 
     <AppSidebar class="app-shell__sidebar" variant="dark">
-      <SidebarGroup label="Blockchain" :level="1">
-        <SidebarGroup label="Sui" :level="2">
-          <router-link to="/" custom v-slot="{ navigate }">
-            <SidebarItem label="DAO" icon="🏛" :active="isDao" @click="navigate" />
-          </router-link>
-          <router-link to="/walrus" custom v-slot="{ navigate }">
-            <SidebarItem label="Walrus Storage" icon="🗄" :active="isWalrus" @click="navigate" />
-          </router-link>
-          <router-link to="/sealed-storage" custom v-slot="{ navigate }">
-            <SidebarItem label="Sealed Storage" icon="🔒" :active="isSealedStorage" @click="navigate" />
-          </router-link>
-          <router-link to="/access-gate" custom v-slot="{ navigate }">
-            <SidebarItem label="Access Gate" icon="🔐" :active="isAccessGate" @click="navigate" />
-          </router-link>
-          <router-link to="/token-deployer" custom v-slot="{ navigate }">
-            <SidebarItem label="Token Deployer" icon="🪙" :active="isTokenDeployer" @click="navigate" />
-          </router-link>
-        </SidebarGroup>
-      </SidebarGroup>
+      <!-- Top level: organisation sections -->
+      <template v-if="sidebarView === 'top'">
+        <router-link to="/" custom v-slot="{ navigate }">
+          <SidebarItem label="Treasury" icon="🏦" :active="isTreasury" @click="goTreasury(navigate)" />
+        </router-link>
+        <SidebarItem label="Blockchain" icon="⛓" :active="isBlockchain" @click="enterBlockchain" />
+      </template>
+
+      <!-- Blockchain section: chain selector + up-one-level -->
+      <template v-else>
+        <button type="button" class="sidebar-up" @click="upOneLevel">
+          <span aria-hidden="true">←</span> Back
+        </button>
+        <ChainSelector v-model="selectedChain" />
+      </template>
 
       <template #body>
         <NetworkSelector v-if="account" />
@@ -156,6 +184,28 @@ const accountExplorerHref = computed(() =>
   color: var(--accent);
 }
 
+/* ── Up-one-level control ──────────────────────────────── */
+.sidebar-up {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: none;
+  border: none;
+  padding: 0.2rem 0.25rem;
+  margin-bottom: 0.35rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+.sidebar-up:hover {
+  color: var(--text);
+}
+.sidebar-up:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
 /* ── Sidebar foot ──────────────────────────────────────── */
 .sidebar-divider {
   border: none;
@@ -214,6 +264,7 @@ const accountExplorerHref = computed(() =>
 .sidebar-copyright {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 0.5rem;
   font-size: 0.75rem;
   color: var(--muted);
