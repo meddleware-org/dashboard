@@ -4,7 +4,7 @@
 // switch tool sets without a rewrite. Each tool view is lazy-loaded (its deps, incl. the Walrus
 // wasm, load only when its tab is first opened) and kept alive so switching tabs preserves state.
 import { computed, defineAsyncComponent, ref, watch } from 'vue'
-import { AppTabNav, type AppTab } from '@meddleware/ui'
+import { AppTabNav, UiTabPanel, type AppTab } from '@meddleware/ui'
 
 const props = withDefaults(defineProps<{ chain?: string }>(), { chain: 'sui' })
 
@@ -42,11 +42,12 @@ const activeComp = computed(() => tools.value.find((t) => t.id === active.value)
   <AppTabNav
   :tabs="tabs"
   v-model="active"
+  id-prefix="blockchain"
   variant="raised"
   size="lg"
   aria-label="Sui tools" />
 
-  <div class="blockchain-view__content">
+  <UiTabPanel id-prefix="blockchain" :tab="active" class="blockchain-view__content">
 
     <KeepAlive>
 
@@ -54,7 +55,7 @@ const activeComp = computed(() => tools.value.find((t) => t.id === active.value)
 
     </KeepAlive>
 
-  </div>
+  </UiTabPanel>
 
 </template>
 

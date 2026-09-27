@@ -108,13 +108,13 @@ const accountExplorerHref = computed(() =>
       </template>
 
       <template #body>
-        <NetworkSelector v-if="account" />
+        <NetworkSelector v-if="account" class="sidebar-body" />
       </template>
 
       <!-- Sidebar foot holds only the wallet control (contextual). Copyright, docs links, and
            status now live in the shell footer to free vertical space as the sidebar grows. -->
       <template #foot>
-        <div v-if="account" class="wallet-connected">
+        <p v-if="account" class="sidebar-foot wallet-connected">
           <CopyableAddress :address="account.address">
             <ExplorerLink
               v-if="accountExplorerHref"
@@ -123,11 +123,8 @@ const accountExplorerHref = computed(() =>
             />
           </CopyableAddress>
           <button type="button" class="wallet-disconnect" @click="disconnect">Disconnect</button>
-        </div>
-        <div v-else class="wallet-disconnected">
-          <span class="wallet-status-dot" aria-hidden="true"></span>
-          <span class="wallet-status-label">No wallet connected</span>
-        </div>
+        </p>
+        <p v-else class="sidebar-foot wallet-disconnected">No wallet connected</p>
       </template>
     </AppSidebar>
 
@@ -219,13 +216,27 @@ const accountExplorerHref = computed(() =>
   outline-offset: 2px;
 }
 
-/* ── Sidebar foot (wallet only) ────────────────────────── */
+/* ── Sidebar body/foot ──────────────────────────────────
+   AppSidebar renders these slots unwrapped, so the shell styles its own content. */
+.sidebar-body {
+  flex-shrink: 0;
+}
+
+.sidebar-foot {
+  flex-shrink: 0;
+  margin: 0;
+  /* Extra bottom space keeps the wallet control clear of the shell footer's border. */
+  padding: var(--space-xs) var(--space-sm) calc(var(--space-xs) + 0.5rem);
+  border-top: 1px solid var(--_border);
+  color: var(--_muted);
+  font-size: var(--font-size-sm);
+}
+
 .wallet-connected {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  margin-bottom: 0.5rem;
 }
 
 .wallet-disconnect {
@@ -248,19 +259,17 @@ const accountExplorerHref = computed(() =>
   display: flex;
   align-items: center;
   gap: 0.45rem;
-  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--muted);
 }
 
-.wallet-status-dot {
+/* Decorative status dot (the text states the status). */
+.wallet-disconnected::before {
+  content: '';
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: var(--muted, #666);
   flex-shrink: 0;
-}
-
-.wallet-status-label {
-  font-size: 0.8rem;
-  color: var(--muted);
 }
 </style>

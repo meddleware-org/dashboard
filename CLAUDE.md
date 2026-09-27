@@ -41,13 +41,15 @@ participation ships. Do not remove the dependency.
   wallet extensions don't inject into them). Tool routes are lazy (`() => import(...)`) so each
   tool's deps (incl. the Walrus wasm) load only on navigation.
 - **No accounting logic.** Financial truth lives on-chain; this app derives none of it.
+- **Shell slots are unwrapped.** `AppHeader`/`AppSidebar`/`AppFooter` render slot content directly,
+  so the shell styles its own pieces (e.g. `.sidebar-foot`, `.sidebar-body` in `App.vue`).
 - **Sidebar navigation components come from `@meddleware/ui`.** Use `SidebarItem` for entries
   (and `SidebarGroup` if a mode ever needs grouped headers). Do not create local copies. The
   sidebar renders one of two modes (see IA above): top-level org sections, or the Blockchain
   chain-selector. Onboarding a new chain = a new entry in `ChainSelector`'s `CHAINS` array plus a
   new tool set in `BlockchainView`'s `TOOLSETS` — no shell changes.
 - **qt-style tabbed tools.** The Blockchain view uses the shared `AppTabNav variant="raised"`
-  (desktop-console tabs) over lazy, kept-alive tool views. Do not give each tool its own route;
+  (WAI-ARIA tabs) with a `UiTabPanel` around the lazy, kept-alive tool views. Do not give each tool its own route;
   they are tabs within `/blockchain`.
 - **StatusWidget polls `https://status.meddleware.co.uk/api/status` every 60 s** via plain
   `fetch`. No external libraries. Three states: `ok`, `degraded`, `error`.
