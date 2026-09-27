@@ -38,6 +38,7 @@ const model = defineModel<string>({ default: 'sui' })
   text-transform: uppercase;
   color: var(--muted);
   opacity: 0.75;
-  margin: 0 0 var(--space-2xs) var(--space-2xs);
+  /* Left margin matches SidebarItem's horizontal padding so the label aligns with the items. */
+  margin: 0 0 var(--space-2xs) var(--space-sm);
 }
 </style>

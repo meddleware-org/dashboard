@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter, RouterView, RouterLink } from 'vue-router'
 import {
-  AppHeader, AppSidebar,
+  AppHeader, AppSidebar, AppFooter,
   ColorModeControl, SidebarItem, StatusWidget, CopyableAddress, ExplorerLink, CopyrightLine,
   suiExplorerUrl, useColorMode,
 } from '@meddleware/ui'
@@ -19,7 +19,9 @@ const { network } = useNetwork()
 // Entering the Blockchain section swaps the sidebar to a chain selector with an up-one-level
 // control that returns to the top level without leaving the page.
 type SidebarView = 'top' | 'blockchain'
-const sidebarView = ref<SidebarView>(route.path === '/blockchain' ? 'blockchain' : 'top')
+// Derived from the route below (immediate watcher) so a direct load / reload of /blockchain
+// shows the chain selector, not the top-level menu.
+const sidebarView = ref<SidebarView>('top')
 const selectedChain = ref('sui')
 
 const isTreasury = computed(() => route.path === '/')
@@ -43,12 +45,16 @@ function upOneLevel(): void {
   sidebarView.value = 'top'
 }
 
-// Keep the sidebar sensible on external route changes (redirects, back/forward).
+// Derive the sidebar mode from the route so it's correct on direct load / reload / redirect /
+// back-forward — /blockchain always opens the chain selector. `upOneLevel()` sets 'top' without a
+// route change, so this watcher (which fires only on path changes) leaves that transient override
+// intact until the next navigation.
 watch(
   () => route.path,
   (p) => {
-    if (p !== '/blockchain' && sidebarView.value === 'blockchain') sidebarView.value = 'top'
+    sidebarView.value = p === '/blockchain' ? 'blockchain' : 'top'
   },
+  { immediate: true },
 )
 
 // The dashboard hosts the single shared wallet connection for every inline tool view. It
@@ -105,6 +111,8 @@ const accountExplorerHref = computed(() =>
         <NetworkSelector v-if="account" />
       </template>
 
+      <!-- Sidebar foot holds only the wallet control (contextual). Copyright, docs links, and
+           status now live in the shell footer to free vertical space as the sidebar grows. -->
       <template #foot>
         <div v-if="account" class="wallet-connected">
           <CopyableAddress :address="account.address">
@@ -120,21 +128,19 @@ const accountExplorerHref = computed(() =>
           <span class="wallet-status-dot" aria-hidden="true"></span>
           <span class="wallet-status-label">No wallet connected</span>
         </div>
-        <hr class="sidebar-divider" aria-hidden="true" />
-        <StatusWidget class="sidebar-status" />
-        <div class="sidebar-copyright">
-          <CopyrightLine symbolVariant="kopimi" organisation-name="Meddleware" rightsStatement="jam" />
-          <span class="sidebar-docs-links">
-            <a :href="DOCS_URL" target="_blank" rel="noopener noreferrer" class="sidebar-docs-link">Documentation</a>
-            <a :href="DEV_URL" target="_blank" rel="noopener noreferrer" class="sidebar-docs-link">Developer docs</a>
-          </span>
-        </div>
       </template>
     </AppSidebar>
 
     <main class="app-shell__main">
       <RouterView />
     </main>
+
+    <AppFooter class="app-shell__footer" variant="dark" :docs-url="DOCS_URL" :dev-url="DEV_URL">
+      <template #start>
+        <CopyrightLine symbolVariant="kopimi" organisation-name="Meddleware" rightsStatement="jam" />
+      </template>
+      <StatusWidget class="footer-status" />
+    </AppFooter>
   </div>
 </template>
 
@@ -142,13 +148,20 @@ const accountExplorerHref = computed(() =>
 .app-shell {
   display: grid;
   grid-template-columns: var(--mw-sidebar-width, 240px) 1fr;
-  grid-template-rows: var(--mw-header-height, 56px) 1fr;
+  grid-template-rows: var(--mw-header-height, 56px) 1fr auto;
   height: 100dvh;
   overflow: hidden;
 }
 
 .app-shell__header {
   grid-column: 1 / -1;
+}
+
+.app-shell__footer {
+  grid-column: 1 / -1;
+}
+.footer-status {
+  font-size: var(--font-size-sm);
 }
 
 .app-shell__sidebar {
@@ -159,13 +172,12 @@ const accountExplorerHref = computed(() =>
 .app-shell__main {
   overflow-y: auto;
   min-height: 0;
-  padding: 6px;
 }
 
 @media (max-width: 720px) {
   .app-shell {
     grid-template-columns: 1fr;
-    grid-template-rows: var(--mw-header-height, 56px) 1fr;
+    grid-template-rows: var(--mw-header-height, 56px) 1fr auto;
   }
   .app-shell__sidebar {
     display: none;
@@ -191,12 +203,13 @@ const accountExplorerHref = computed(() =>
   gap: 0.35rem;
   background: none;
   border: none;
-  padding: 0.2rem 0.25rem;
+  /* Left padding matches SidebarItem so "← Back" aligns with the items below. */
+  padding: 0.2rem var(--space-sm);
   margin-bottom: 0.35rem;
   color: var(--muted);
   font-size: 0.8rem;
   cursor: pointer;
-  border-radius: var(--radius);
+  border-radius: 0;
 }
 .sidebar-up:hover {
   color: var(--text);
@@ -206,17 +219,7 @@ const accountExplorerHref = computed(() =>
   outline-offset: 2px;
 }
 
-/* ── Sidebar foot ──────────────────────────────────────── */
-.sidebar-divider {
-  border: none;
-  border-top: 1px solid var(--border, #333);
-  margin: 0.5rem 0;
-}
-
-.sidebar-status {
-  margin-bottom: 0.25rem;
-}
-
+/* ── Sidebar foot (wallet only) ────────────────────────── */
 .wallet-connected {
   display: flex;
   align-items: center;
@@ -259,28 +262,5 @@ const accountExplorerHref = computed(() =>
 .wallet-status-label {
   font-size: 0.8rem;
   color: var(--muted);
-}
-
-.sidebar-copyright {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.75rem;
-  color: var(--muted);
-  opacity: 0.6;
-  text-align: center;
-}
-
-.sidebar-docs-links {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.sidebar-docs-link {
-  color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 2px;
 }
 </style>

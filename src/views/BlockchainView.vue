@@ -38,27 +38,34 @@ const activeComp = computed(() => tools.value.find((t) => t.id === active.value)
 </script>
 
 <template>
-  <div class="blockchain-view">
-    <AppTabNav :tabs="tabs" v-model="active" variant="raised" aria-label="Sui tools" />
-    <div class="blockchain-view__content">
-      <KeepAlive>
-        <component :is="activeComp" :key="active" />
-      </KeepAlive>
-    </div>
+
+  <AppTabNav
+  :tabs="tabs"
+  v-model="active"
+  variant="raised"
+  size="lg"
+  aria-label="Sui tools" />
+
+  <div class="blockchain-view__content">
+
+    <KeepAlive>
+
+      <component :is="activeComp" :key="active" />
+
+    </KeepAlive>
+
   </div>
+
 </template>
 
 <style scoped>
-.blockchain-view {
+.blockchain-view__content {
+  flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 0;
   height: 100%;
-}
-.blockchain-view__content {
-  flex: 1;
-  min-height: 0;
   overflow-y: auto;
-  padding-top: 6px;
+  max-width: var(--mw-tool-content-max);
 }
 </style>
