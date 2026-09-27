@@ -174,7 +174,7 @@ const accountExplorerHref = computed(() =>
   min-height: 0;
 }
 
-@media (max-width: 720px) {
+@media (width <= 720px) {
   .app-shell {
     grid-template-columns: 1fr;
     grid-template-rows: var(--mw-header-height, 56px) 1fr auto;
