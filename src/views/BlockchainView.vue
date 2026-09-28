@@ -45,6 +45,7 @@ const activeComp = computed(() => tools.value.find((t) => t.id === active.value)
   id-prefix="blockchain"
   variant="raised"
   size="lg"
+  class="blockchain-view__tabs"
   aria-label="Sui tools" />
 
   <UiTabPanel id-prefix="blockchain" :tab="active" class="blockchain-view__content">
@@ -68,5 +69,17 @@ const activeComp = computed(() => tools.value.find((t) => t.id === active.value)
   height: 100%;
   overflow-y: auto;
   max-width: var(--mw-tool-content-max);
+  margin: 0 auto;
+  /* Consecutive Fibonacci steps of the spacing scale (13 : 8 : 5 units), so top : bottom and
+     bottom : sides are each ≈ φ — generous air under the tabs, tighter at the foot and sides. */
+  padding: var(--space-lg) var(--space-sm) var(--space-md);
+}
+
+/* This page only: the tool tabs sit flush — no inset around the strip and no gaps between tabs.
+   Overrides AppTabNav's shared raised/lg spacing for this instance; other tab strips keep theirs.
+   The modifier classes match the component's own selector so this wins regardless of CSS order. */
+.blockchain-view__tabs.mw-tab-nav--raised.mw-tab-nav--lg {
+  gap: 0;
+  padding: 0;
 }
 </style>
