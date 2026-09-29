@@ -38,41 +38,54 @@ const activeComp = computed(() => tools.value.find((t) => t.id === active.value)
 </script>
 
 <template>
+  <!-- Fills the shell's main area exactly, so main never scrolls on this page: the tool tabs stay
+       in view and only the tool panel scrolls (its scrollbar at the right edge of the area). -->
+  <div class="blockchain-view">
+    <AppTabNav
+      v-model="active"
+      :tabs="tabs"
+      id-prefix="blockchain"
+      variant="raised"
+      size="lg"
+      class="blockchain-view__tabs"
+      aria-label="Sui tools"
+    />
 
-  <AppTabNav
-  :tabs="tabs"
-  v-model="active"
-  id-prefix="blockchain"
-  variant="raised"
-  size="lg"
-  class="blockchain-view__tabs"
-  aria-label="Sui tools" />
-
-  <UiTabPanel id-prefix="blockchain" :tab="active" class="blockchain-view__content">
-
-    <KeepAlive>
-
-      <component :is="activeComp" :key="active" />
-
-    </KeepAlive>
-
-  </UiTabPanel>
-
+    <UiTabPanel id-prefix="blockchain" :tab="active" class="blockchain-view__content">
+      <KeepAlive>
+        <component :is="activeComp" :key="active" />
+      </KeepAlive>
+    </UiTabPanel>
+  </div>
 </template>
 
 <style scoped>
+.blockchain-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.blockchain-view__tabs {
+  flex: none;
+}
+
+/* The only scroll container on this page. It spans the full width of the main area (so its
+   scrollbar sits at the area's edge, not beside the content column); the content column is centred
+   and capped at --mw-tool-content-max by inline padding that grows with the spare width. The
+   panel is focusable (UiTabPanel), so keyboard users can scroll it. */
 .blockchain-view__content {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 0;
-  height: 100%;
   overflow-y: auto;
-  max-width: var(--mw-tool-content-max);
-  margin: 0 auto;
+  scrollbar-gutter: stable;
   /* Consecutive Fibonacci steps of the spacing scale (13 : 8 : 5 units), so top : bottom and
      bottom : sides are each ≈ φ — generous air under the tabs, tighter at the foot and sides. */
-  padding: var(--space-lg) var(--space-sm) var(--space-md);
+  padding-block: var(--space-lg) var(--space-md);
+  padding-inline: max(var(--space-sm), calc((100% - var(--mw-tool-content-max)) / 2 + var(--space-sm)));
 }
 
 /* This page only: the tool tabs sit flush — no inset around the strip and no gaps between tabs.
