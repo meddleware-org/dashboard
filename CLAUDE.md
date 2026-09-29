@@ -53,14 +53,15 @@ participation ships. Do not remove the dependency.
   they are tabs within `/blockchain`.
 - **StatusWidget polls `https://status.meddleware.co.uk/api/status` every 60 s** via plain
   `fetch`. No external libraries. Three states: `ok`, `degraded`, `error`.
-- **`overrides.@mysten/sui` (pinned `2.31.0`) must stay.** The embedded tools disagree on the
-  SDK version: `@meddleware/*` packages declare `^2.30.0`, while upstream Mysten Seal
-  (`@mysten/seal`) and Walrus (`@mysten/walrus`) require `^2.31.0`. Two copies of `@mysten/sui`
-  in one tree produce `#private`-mismatch type errors (`Type 'X' is not assignable to type 'X'`)
-  that break `vue-tsc` — the shared `@meddleware/wallet-adapter` `Executor` crosses every tool,
-  so a single version is mandatory. `2.31.0` satisfies Seal/Walrus's `^2.31.0` lower-bound and is
-  backward-compatible with every `@meddleware/*` `^2.30.0` range (verified). Do not delete this;
-  if a future tool needs a newer minor, bump to the new minimum that satisfies every embedded tool.
+- **One `@mysten/sui` in the tree — a direct dependency pinned exactly (`2.33.1`), no
+  `overrides`.** Two copies of `@mysten/sui` produce `#private`-mismatch type errors
+  (`Type 'X' is not assignable to type 'X'`) that break `vue-tsc`, because the shared
+  `@meddleware/wallet-adapter` `Executor` crosses every tool. Every embedded range admits
+  `2.33.1` — the `@meddleware/*` tools and SDKs declare `^2.33.1`, as do upstream `@mysten/seal`
+  1.4.16, `@mysten/walrus` 1.2.31 and `@mysten/wallet-standard` 0.21.30 — so npm dedupes to the
+  pin and an override is unnecessary. When bumping, pick the lowest version every embedded tool
+  admits, then confirm `npm ls @mysten/sui` shows a single version (all others `deduped`). Re-add
+  an `overrides` entry only if the embedded ranges stop overlapping.
 
 ## Dependency order
 
