@@ -65,7 +65,7 @@ const { account, disconnect } = useWallet({
 })
 
 const DOCS_URL = import.meta.env.VITE_DOCS_URL || 'https://docs.meddleware.co.uk/'
-const DEV_URL  = import.meta.env.VITE_DEV_URL  || 'https://dev.meddleware.co.uk/'
+const DEV_URL = import.meta.env.VITE_DEV_URL || 'https://dev.meddleware.co.uk/'
 
 // SuiVision has no localnet explorer, so only build a link for public networks; otherwise the
 // address is shown copy-only.
@@ -116,11 +116,7 @@ const accountExplorerHref = computed(() =>
       <template #foot>
         <p v-if="account" class="sidebar-foot wallet-connected">
           <CopyableAddress :address="account.address">
-            <ExplorerLink
-              v-if="accountExplorerHref"
-              :href="accountExplorerHref"
-              :value="account.address"
-            />
+            <ExplorerLink v-if="accountExplorerHref" :href="accountExplorerHref" :value="account.address" />
           </CopyableAddress>
           <button type="button" class="wallet-disconnect" @click="disconnect">Disconnect</button>
         </p>
@@ -157,6 +153,7 @@ const accountExplorerHref = computed(() =>
 .app-shell__footer {
   grid-column: 1 / -1;
 }
+
 .footer-status {
   font-size: var(--font-size-sm);
 }
@@ -167,15 +164,18 @@ const accountExplorerHref = computed(() =>
 }
 
 .app-shell__main {
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
   min-height: 0;
 }
 
-@media (width <= 720px) {
+@media (width <=720px) {
   .app-shell {
     grid-template-columns: 1fr;
     grid-template-rows: var(--mw-header-height, 56px) 1fr auto;
   }
+
   .app-shell__sidebar {
     display: none;
   }
@@ -208,9 +208,11 @@ const accountExplorerHref = computed(() =>
   cursor: pointer;
   border-radius: 0;
 }
+
 .sidebar-up:hover {
   color: var(--text);
 }
+
 .sidebar-up:focus-visible {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
