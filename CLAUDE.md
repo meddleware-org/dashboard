@@ -53,15 +53,19 @@ participation ships. Do not remove the dependency.
   they are tabs within `/blockchain`.
 - **StatusWidget polls `https://status.meddleware.co.uk/api/status` every 60 s** via plain
   `fetch`. No external libraries. Three states: `ok`, `degraded`, `error`.
-- **One `@mysten/sui` in the tree — a direct dependency pinned exactly (`2.33.1`), no
+- **One `@mysten/sui` in the tree — a direct dependency pinned exactly (`2.33.2`), no
   `overrides`.** Two copies of `@mysten/sui` produce `#private`-mismatch type errors
   (`Type 'X' is not assignable to type 'X'`) that break `vue-tsc`, because the shared
   `@meddleware/wallet-adapter` `Executor` crosses every tool. Every embedded range admits
-  `2.33.1` — the `@meddleware/*` tools and SDKs declare `^2.33.1`, as do upstream `@mysten/seal`
-  1.4.16, `@mysten/walrus` 1.2.31 and `@mysten/wallet-standard` 0.21.30 — so npm dedupes to the
-  pin and an override is unnecessary. When bumping, pick the lowest version every embedded tool
+  `2.33.2` — the `@meddleware/*` tools and SDKs declare `^2.33.1`; upstream `@mysten/seal`
+  1.4.17, `@mysten/walrus` 1.2.32 and `@mysten/wallet-standard` 0.21.31 declare `^2.33.2` — so npm
+  dedupes to the pin and an override is unnecessary. When bumping, pick the lowest version every embedded tool
   admits, then confirm `npm ls @mysten/sui` shows a single version (all others `deduped`). Re-add
   an `overrides` entry only if the embedded ranges stop overlapping.
+- **One `@meddleware/wallet-adapter` in the tree.** It is a module singleton: two copies are two
+  wallet connections. This app holds the one real dependency; every embedded tool declares it as a
+  peerDependency (`>=0.0.12 <0.2.0`). After a bump, confirm a single copy:
+  `find node_modules -path '*@meddleware/wallet-adapter/package.json'` lists exactly one.
 
 ## Dependency order
 
