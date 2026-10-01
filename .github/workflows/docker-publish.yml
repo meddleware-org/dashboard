@@ -71,6 +71,7 @@ jobs:
             VITE_ACCESS_GATE_SOULBOUND_TESTNET=${{ vars.VITE_ACCESS_GATE_SOULBOUND_TESTNET }}
             VITE_ACCESS_GATE_PRICE_MIST_TESTNET=${{ vars.VITE_ACCESS_GATE_PRICE_MIST_TESTNET }}
             VITE_UPLOAD_RELAY_MAX_TIP_MIST=${{ vars.VITE_UPLOAD_RELAY_MAX_TIP_MIST }}
+            VITE_INDEXER_URL=${{ vars.VITE_INDEXER_URL }}
 
   build-docker-arm64-public:
     name: Docker arm64 (quay.io + Docker Hub)
@@ -115,6 +116,7 @@ jobs:
             VITE_ACCESS_GATE_SOULBOUND_TESTNET=${{ vars.VITE_ACCESS_GATE_SOULBOUND_TESTNET }}
             VITE_ACCESS_GATE_PRICE_MIST_TESTNET=${{ vars.VITE_ACCESS_GATE_PRICE_MIST_TESTNET }}
             VITE_UPLOAD_RELAY_MAX_TIP_MIST=${{ vars.VITE_UPLOAD_RELAY_MAX_TIP_MIST }}
+            VITE_INDEXER_URL=${{ vars.VITE_INDEXER_URL }}
 
   merge-docker-public:
     name: Merge + sign (quay.io + Docker Hub)
@@ -264,6 +266,7 @@ jobs:
             VITE_ACCESS_GATE_SOULBOUND_TESTNET=${{ vars.VITE_ACCESS_GATE_SOULBOUND_TESTNET }}
             VITE_ACCESS_GATE_PRICE_MIST_TESTNET=${{ vars.VITE_ACCESS_GATE_PRICE_MIST_TESTNET }}
             VITE_UPLOAD_RELAY_MAX_TIP_MIST=${{ vars.VITE_UPLOAD_RELAY_MAX_TIP_MIST }}
+            VITE_INDEXER_URL=${{ vars.VITE_INDEXER_URL }}
 
   build-docker-arm64-private:
     name: Docker arm64 (self-hosted registry)
@@ -299,6 +302,7 @@ jobs:
             VITE_ACCESS_GATE_SOULBOUND_TESTNET=${{ vars.VITE_ACCESS_GATE_SOULBOUND_TESTNET }}
             VITE_ACCESS_GATE_PRICE_MIST_TESTNET=${{ vars.VITE_ACCESS_GATE_PRICE_MIST_TESTNET }}
             VITE_UPLOAD_RELAY_MAX_TIP_MIST=${{ vars.VITE_UPLOAD_RELAY_MAX_TIP_MIST }}
+            VITE_INDEXER_URL=${{ vars.VITE_INDEXER_URL }}
 
   merge-docker-private:
     name: Merge (self-hosted registry)
