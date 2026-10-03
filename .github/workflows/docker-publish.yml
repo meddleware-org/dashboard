@@ -23,6 +23,8 @@ jobs:
         run: npm ci
       - name: Audit dependencies
         run: node .github/audit-gate.mjs
+      - name: Verify registry signatures and provenance
+        run: npm audit signatures
       - name: Type-check
         run: npm run type-check --if-present
       - name: Unit tests
