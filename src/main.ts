@@ -1,5 +1,4 @@
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
 
 // Shared design system: tokens first (defines CSS vars), then base element defaults.
 import '@meddleware/design-tokens/tokens.css'
@@ -17,6 +16,5 @@ useColorMode('dark')
 useSeason()
 
 const app = createApp(App)
-app.use(createPinia())
 app.use(router)
 app.mount('#app')
