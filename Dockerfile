@@ -47,7 +47,7 @@ ENV VITE_NETWORK=${VITE_NETWORK} \
     VITE_UPLOAD_RELAY_MAX_TIP_MIST=${VITE_UPLOAD_RELAY_MAX_TIP_MIST} \
     VITE_INDEXER_URL=${VITE_INDEXER_URL}
 
-RUN npm run build
+RUN npm run build && npm run licenses
 
 # ── runtime stage ─────────────────────────────────────────────────────────────
 # static-server is a minimal Go binary image. SPA_FALLBACK serves index.html
@@ -57,6 +57,9 @@ ARG CSP
 ENV CONTENT_SECURITY_POLICY="${CSP}"
 
 COPY --from=build /app/dist /app/public
+# The lockfile lets SBOM scanners see the npm packages the bundle was built from (the bundle itself carries no
+# package metadata). It sits outside the served directory; THIRD_PARTY_LICENSES is served with the site.
+COPY --from=build /app/package-lock.json /usr/share/doc/dashboard/package-lock.json
 
 ENV SERVE_DIR=/app/public \
     SPA_FALLBACK=true \

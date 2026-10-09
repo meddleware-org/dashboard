@@ -1,6 +1,6 @@
 {
   "name": "@meddleware/dashboard",
-  "version": "0.1.83",
+  "version": "0.1.84",
   "homepage": "https://docs.meddleware.co.uk/",
   "description": "Meddleware tools hub — Vue 3 SPA listing hosted services (Walrus, Access Gate) with white-label deploy options.",
   "author": "Meddleware <dev@meddleware.co.uk>",
@@ -25,7 +25,9 @@
     "lint:css": "stylelint \"src/**/*.{css,vue}\"",
     "lint:js": "eslint .",
     "lint": "npm run lint:css && npm run lint:js && npm run lint:html",
-    "lint:html": "html-validate \"src/**/*.vue\""
+    "lint:html": "html-validate \"src/**/*.vue\"",
+    "licenses": "node scripts/third-party-licenses.mjs",
+    "check:licenses": "node scripts/third-party-licenses.mjs --check"
   },
   "publishConfig": {
     "access": "public"
