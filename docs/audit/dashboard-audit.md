@@ -9,16 +9,16 @@
 **Runtime targets:** browser
 **Build tool:** vite 8.3.4, @vitejs/plugin-vue 6.0.10, vue 3.5.44, vue-router 5.4, vue-tsc 3.3.13   **Hosting:** container image (static-server 0.1.8); no static host / `_headers`   **Embedding hosts:** none (this is the host of the tool views)
 **VITE_\* inventory:** build args baked at build, testnet only, no secrets: `VITE_NETWORK` (default `testnet`), `VITE_WALRUS_RELAY_TESTNET|MAINNET`, `VITE_RPC_TESTNET|MAINNET`, `VITE_ACCESS_GATE_ID_TESTNET|MAINNET` (relay gate — read by access-gate-ui/walrus-ui), `VITE_ACCESS_GATE_SOULBOUND_TESTNET`, `VITE_UPLOAD_RELAY_MAX_TIP_MIST`, `VITE_INDEXER_URL`; shell-only `VITE_DOCS_URL`, `VITE_DEV_URL`; committed in `.env.production`: `VITE_FEE_TREASURY_TESTNET|MAINNET` (token-deployer fee address, public). Repository variables set 2026-10-09: gate `0x316f1bf9…faddc` (`VITE_ACCESS_GATE_PRICE_MIST_TESTNET` is removed in 0.1.85: the price is read from the chain, F18; the inventory is `.env.example`, pinned by `tests/build-inputs.test.ts`, F16)
-**Images:** `quay.io/meddleware-org/dashboard:0.1.84@sha256:e8957db3d880d593b19e0c0e32e2a858887879505e969b5bec7cd804734cb34e` (Docker Hub mirror `meddleware/dashboard`, same digest); 0.1.85 is prepared (not yet released or deployed)
-**Base images:** build `node:24-slim@sha256:0e0ff40c…f9b6`; runtime `quay.io/meddleware-org/static-server:0.1.8@sha256:e32cf42b…4000` (0.1.84 deployed on 0.1.7, Go 1.26.9)
+**Images:** `quay.io/meddleware-org/dashboard:0.1.85@sha256:3696a6ac9634e3d699a5153b1751db35f3a34f6c8db22c05015fcb0eb483c04f` (Docker Hub mirror `meddleware/dashboard`, same digest; cosign keyless signature verified 2026-10-18 against the workflow-anchored identity, `verify-digests.sh` 16/16). Superseded 0.1.84 was `sha256:e8957db3…b34e`
+**Base images:** build `node:24-slim@sha256:0e0ff40c…f9b6`; runtime `quay.io/meddleware-org/static-server:0.1.8@sha256:e32cf42b…4000` (0.1.85 is built on 0.1.8; the 0.1.84 image deployed 2026-10-09 carried 0.1.7, Go 1.26.9)
 **Runtime user:** 65534:65534 (`USER` in the Dockerfile, `runAsNonRoot` in the pod)   **Runtime FS:** read-only root, nothing writable mounted
 **Deployed by:** `post-bootstrap/dashboard/overlays/default` (digest from `config/images.yaml`)
 **Build args:** the `VITE_*` list above and `CSP` — public configuration, none secret
-**Deployment status:** npm v0.1.84 (2026-10-09, trusted publishing); image `quay.io/meddleware-org/dashboard` serving `dash.meddleware.co.uk` at 0.1.84 (deployed 2026-10-09; live headers checked 2026-10-09; cosign signature valid, `verify-digests.sh` 16/16)
-**Review date:** 2026-09-18 (first pass) · re-verified 2026-10-03 · re-verified 2026-10-09 · fix wave 2026-10-18 (0.1.85)
+**Deployment status:** npm v0.1.85 (2026-10-18, trusted publishing); image `quay.io/meddleware-org/dashboard` serving `dash.meddleware.co.uk` at 0.1.85 (`sha256:3696a6ac…c04f`; release tag `v0.1.85` = `c81fb02`, Publish run 39138496552; released, signature verified against the workflow-anchored identity (`verify-digests.sh` 16/16) and deployed 2026-10-18, rollout succeeded; 0.1.84 was deployed 2026-10-09; live headers on `/` re-checked 2026-10-18)
+**Review date:** 2026-09-18 (first pass) · re-verified 2026-10-03 · re-verified 2026-10-09 · fix wave 2026-10-18 (0.1.85, released and deployed)
 **Reviewer:** Internal review
 **Severity ceiling:** Medium — it owns the one wallet connection every embedded tool signs through, so its ceiling is the union of the tools' signing surfaces. No High or Critical in dashboard code.
-**Status:** fix wave 2026-10-18 (0.1.85, not yet released) — 20 findings (2 Positive): 15 RESOLVED, 1 ADJUDICATED, 1 ACCEPTED-RISK, 1 DEFERRED
+**Status:** fix wave 2026-10-18 (0.1.85, released and deployed 2026-10-18; signature verified, rollout succeeded) — 20 findings (2 Positive): 15 RESOLVED, 1 ADJUDICATED, 1 ACCEPTED-RISK, 1 DEFERRED
 
 ---
 
@@ -55,7 +55,7 @@ live headers and the repository settings, and applied the container-image lens (
 - **F17 (Low, DEFERRED)** — registry pushes still use long-lived tokens (`OPERATOR_TASKS.md`,
   "Image registry credentials").
 
-The 2026-10-18 fix wave (0.1.85, prepared, not released) embeds the 2026-10-18 builds of every tool
+The 2026-10-18 fix wave (0.1.85, released and deployed 2026-10-18) embeds the 2026-10-18 builds of every tool
 (walrus-relay 0.1.31: the access-gate price is read from the chain) and found and fixed three more:
 
 - **F18 (Info, RESOLVED)** — the `VITE_ACCESS_GATE_PRICE_MIST_TESTNET` build input is removed everywhere.
@@ -101,7 +101,7 @@ Critical / High / Medium / Low / Info / Positive.
   production packages); `npm pack --dry-run` (13 files, with `CHANGELOG.md`); one copy of `@mysten/sui`
   (2.36.0), of wallet-adapter and of each `@meddleware/*` package (`npm ls`, `find node_modules`);
   `npm test` 65 tests in 6 files; `npm run test:e2e` 3 tests; `podman build` and `scripts/smoke.sh` on the
-  image (rootless podman). Live state is that of 2026-10-09 (0.1.84): `curl -I` of
+  image (rootless podman). Live state is that of 2026-10-09 (0.1.84), plus `curl -I` of `/` re-read on 2026-10-18 (0.1.85): `curl -I` of
   `dash.meddleware.co.uk/` and `/blockchain`, and `/THIRD_PARTY_LICENSES`; repository variables and recent
   workflow runs read with `gh` (the variables again on 2026-10-18).
 
@@ -215,8 +215,8 @@ static-server 0.1.6 (built on a Go release with stdlib advisories; the 2026-10-0
 found 11 in Go 1.26.7).
 **Impact:** the Dockerfile did not document its runtime user; the served binary carried fixable
 stdlib advisories.
-**Remediation / evidence:** the runtime stage is `static-server:0.1.7@sha256:2e227311…` (Go 1.26.9,
-the digest in `config/images.yaml`) and the Dockerfile sets `USER 65534:65534`. The pod runs
+**Remediation / evidence:** the runtime stage was `static-server:0.1.7@sha256:2e227311…` (Go 1.26.9; as found 2026-10-09)
+and is `static-server:0.1.8@sha256:e32cf42b…4000` in 0.1.85 (the digest in `config/images.yaml`) and the Dockerfile sets `USER 65534:65534`. The pod runs
 `runAsNonRoot` (uid/gid 65534), `readOnlyRootFilesystem`, `allowPrivilegeEscalation: false`, all
 capabilities dropped, `seccompProfile: RuntimeDefault` and `automountServiceAccountToken: false`;
 readiness and liveness probes hit `/` and the limits are 100m CPU / 48Mi.
@@ -280,8 +280,7 @@ without `Cache-Control`; `/THIRD_PARTY_LICENSES` is served; `/.env` is a 404 and
 rootless podman on 2026-10-18: passed. The `scan` job runs Trivy over the repository
 (`vuln,misconfig,secret`, fixable CRITICAL/HIGH fail), which covers the Dockerfile. The Kubernetes manifests
 stay in the workspace (`post-bootstrap/dashboard/`; their pod hardening is recorded in F11). The jobs are
-in the workflow both releases call; `tests/workflows.test.ts` pins the commands. The Trivy job has not run
-yet (first run on the 0.1.85 push): if it reports a misconfiguration in the Dockerfile, fix the Dockerfile.
+in the workflow both releases call; `tests/workflows.test.ts` pins the commands. The Trivy job and the `image` job ran green in the `v0.1.85` Publish run (39138496552, 2026-10-18: "Image (build and probe)" and "Filesystem and configuration scan (Trivy)" both success).
 
 ### F15 — npm publish gate is narrower than CI
 
@@ -422,7 +421,7 @@ inputs, the inline-script check and the release-gate workflows. Both run in `nod
 | IMG | Runtime user & filesystem | HOLDS — `USER 65534:65534`; pod hardened, `automountServiceAccountToken: false` (F11) |
 | IMG | SBOM & notices, scan before sign | HOLDS — lockfile in image, `/THIRD_PARTY_LICENSES`, Trivy before cosign (F10) |
 | IMG | Verification command, deployment pinning | HOLDS — `verify-digests.sh` pins issuer and repository identity (F17); overlay pins the digest from `config/images.yaml` |
-| IMG | Config scan and container probe in CI | HOLDS - `image` job (build, `scripts/smoke.sh`) and Trivy `scan` job (F14); the Trivy job has its first run on the 0.1.85 push |
+| IMG | Config scan and container probe in CI | HOLDS - `image` job (build, `scripts/smoke.sh`) and Trivy `scan` job (F14); the `image` and Trivy jobs passed in the `v0.1.85` Publish run (39138496552, 2026-10-18) |
 
 ## Section B — Supply-chain, publish-authority & capability matrix
 
@@ -494,14 +493,14 @@ run of the shell and no production-artifact scan for test hooks exist here becau
 
 ### pre-testnet
 
-- [x] deployed with digest pinning; CSP on every tool route — 0.1.84 digest in `config/images.yaml` and the overlay; headers seen on `/` and `/blockchain` (F12)
-- [x] 0.1.84 deployed (2026-10-09); release run green; cosign signature valid (`verify-digests.sh` 16/16)
+- [x] deployed with digest pinning; CSP on every tool route — 0.1.85 digest in `config/images.yaml` and the overlay; headers seen on `/` and `/blockchain` on 0.1.84 (2026-10-09) and on `/` on 0.1.85 (2026-10-18, `curl -I`) (F12)
+- [x] 0.1.85 deployed (2026-10-18; 0.1.84 on 2026-10-09); release run green; cosign signature valid against the workflow-anchored identity (`verify-digests.sh` 16/16, 2026-10-18)
 - [x] test-mode guards: none needed — no test mode exists (B.VUE-2)
 - [x] non-root runtime; pod security context complete; probes and limits set (F11)
 - [x] audit gate in CI and publish; `npm pack` contents verified (13 files); no install-time code (TS B.TS-2)
 - [x] `SECURITY.md` present (F7)
 - [x] release gate equals CI for the image (F10) and for the npm package (F15, 0.1.85, `verify` calls `node-ci.yml`)
-- [x] config scan and container probe in CI (F14, 0.1.85) — `image` job + `scripts/smoke.sh`, Trivy `scan` job; first CI run pending the push
+- [x] config scan and container probe in CI (F14, 0.1.85) — `image` job + `scripts/smoke.sh`, Trivy `scan` job; first CI run green in the `v0.1.85` Publish run 39138496552 (2026-10-18)
 
 ### pre-mainnet
 
@@ -606,3 +605,4 @@ run of the shell and no production-artifact scan for test hooks exist here becau
   tests, build, `check:dist`, `check:licenses`, audit gate, `npm audit signatures` (npm 11.20.0), image
   build and `scripts/smoke.sh` (rootless podman). The first CI run of the `image` and `scan` jobs happens
   on the push.
+- 2026-10-18 — released and deployed (`v0.1.85` = `c81fb02`, `0.1.85@sha256:3696a6ac9634e3d699a5153b1751db35f3a34f6c8db22c05015fcb0eb483c04f`), verified live. Cosign keyless signature verified against the workflow-anchored identity (`verify-digests.sh` 16/16); the Publish run 39138496552 passed the `image` and Trivy jobs; rollout (`apply.sh dashboard`) succeeded; the page loads in headless Chromium with no console errors or CSP violations and the live headers are present (re-read with `curl -I` on `/`). F12, F17 and the mainnet/maintainer gates unchanged.
