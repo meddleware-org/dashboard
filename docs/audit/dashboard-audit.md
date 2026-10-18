@@ -334,8 +334,8 @@ cluster verifies, and deployments pin by digest, which bounds the damage.
 and digest pinning reject; they could not forge the keyless signature.
 **Remediation / evidence:** the maintainer records each token's scope and rotation date and splits
 shared accounts. The verification command (`verify-digests.sh`) pins the OIDC issuer and the identity
-regexp `https://github.com/meddleware-org/dashboard/` (repository-anchored, any workflow and tag in
-it). The self-hosted mirror is listed as best-effort and unsigned in B.2.
+regexp `^https://github\.com/meddleware-org/dashboard/\.github/workflows/docker-publish\.yml@refs/tags/v` (since 2026-10-18 anchored to the
+`docker-publish.yml` workflow on `v*` tags; it was repository-anchored, any workflow and tag in it, before). The self-hosted mirror is listed as best-effort and unsigned in B.2.
 
 ### F18 — Access-gate price configured at build time (superseded: read from the chain)
 
@@ -420,7 +420,7 @@ inputs, the inline-script check and the release-gate workflows. Both run in `nod
 | IMG | No secrets in layers | HOLDS — build args are public `VITE_*` values and `CSP` |
 | IMG | Runtime user & filesystem | HOLDS — `USER 65534:65534`; pod hardened, `automountServiceAccountToken: false` (F11) |
 | IMG | SBOM & notices, scan before sign | HOLDS — lockfile in image, `/THIRD_PARTY_LICENSES`, Trivy before cosign (F10) |
-| IMG | Verification command, deployment pinning | HOLDS — `verify-digests.sh` pins issuer and repository identity (F17); overlay pins the digest from `config/images.yaml` |
+| IMG | Verification command, deployment pinning | HOLDS — `verify-digests.sh` pins issuer and the `docker-publish.yml@refs/tags/v` workflow identity (since 2026-10-18; F17); overlay pins the digest from `config/images.yaml` |
 | IMG | Config scan and container probe in CI | HOLDS - `image` job (build, `scripts/smoke.sh`) and Trivy `scan` job (F14); the `image` and Trivy jobs passed in the `v0.1.85` Publish run (39138496552, 2026-10-18) |
 
 ## Section B — Supply-chain, publish-authority & capability matrix
@@ -536,7 +536,7 @@ run of the shell and no production-artifact scan for test hooks exist here becau
   whitelist and no install scripts; TS-M8: `npm ci`, audit gate, ADR-0001 baseline).
 - **VUE-M1–VUE-M9** — hold where applicable; VUE-M3 and VUE-M4 are N/A (no test mode, no signing in
   the shell); VUE-M8 holds with the broad `https:` sources recorded in F12.
-- **IMG-M1–IMG-M8** — hold (M7 and M8 per F10; the verification command is repository-anchored, F17).
+- **IMG-M1–IMG-M8** — hold (M7 and M8 per F10; the cluster verification command is workflow-anchored since 2026-10-18, F17).
   The CI config scan and container probe implied by Section C are in CI (F14).
 - The release MUST keep calling the full CI before building (F10), and MUST scan before signing.
 - `connect-src` MUST be enumerated before mainnet if the endpoint set is fixed by then (F12).
@@ -606,3 +606,4 @@ run of the shell and no production-artifact scan for test hooks exist here becau
   build and `scripts/smoke.sh` (rootless podman). The first CI run of the `image` and `scan` jobs happens
   on the push.
 - 2026-10-18 — released and deployed (`v0.1.85` = `c81fb02`, `0.1.85@sha256:3696a6ac9634e3d699a5153b1751db35f3a34f6c8db22c05015fcb0eb483c04f`), verified live. Cosign keyless signature verified against the workflow-anchored identity (`verify-digests.sh` 16/16); the Publish run 39138496552 passed the `image` and Trivy jobs; rollout (`apply.sh dashboard`) succeeded; the page loads in headless Chromium with no console errors or CSP violations and the live headers are present (re-read with `curl -I` on `/`). F12, F17 and the mainnet/maintainer gates unchanged.
+- 2026-10-18 — cosign identity: the default identity in `bootstrap/images/verify-digests.sh` is now workflow-anchored (`^https://github\.com/meddleware-org/${name}/\.github/workflows/docker-publish\.yml@refs/tags/v`); all 16 deployed and contingency images verified valid against it (`STRICT=0 bash bootstrap/images/verify-digests.sh`). This audit has no separate cosign finding (the statement sat in F17, DEFERRED for the token inventory), so no disposition changes; the statement and the Section A IMG row are corrected. This repository publishes no verify command.
