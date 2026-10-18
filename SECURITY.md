@@ -8,7 +8,8 @@ connection.
 
 It does not cover:
 
-- The individual tool views (`walrus-ui`, `access-gate-ui`, `seal-ui`, `dao-ui`),
+- The individual tool views (`treasury-ui`, `walrus-ui`, `seal-ui`, `access-gate-ui`, `token-deployer-ui`,
+  and `dao-ui`, which is retained but not mounted),
   `@meddleware/wallet-adapter`, or `platform-probe` (see their own policies)
 - The wallet extension (which confirms every signature)
 

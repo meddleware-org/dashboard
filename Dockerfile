@@ -28,7 +28,6 @@ ARG VITE_RPC_TESTNET
 ARG VITE_RPC_MAINNET
 ARG VITE_ACCESS_GATE_ID_TESTNET
 ARG VITE_ACCESS_GATE_SOULBOUND_TESTNET
-ARG VITE_ACCESS_GATE_PRICE_MIST_TESTNET
 ARG VITE_ACCESS_GATE_ID_MAINNET
 ARG VITE_UPLOAD_RELAY_MAX_TIP_MIST
 # Read-indexer base URL for the embedded history views (optional; display data, falls back to the
@@ -42,7 +41,6 @@ ENV VITE_NETWORK=${VITE_NETWORK} \
     VITE_RPC_MAINNET=${VITE_RPC_MAINNET} \
     VITE_ACCESS_GATE_ID_TESTNET=${VITE_ACCESS_GATE_ID_TESTNET} \
     VITE_ACCESS_GATE_SOULBOUND_TESTNET=${VITE_ACCESS_GATE_SOULBOUND_TESTNET} \
-    VITE_ACCESS_GATE_PRICE_MIST_TESTNET=${VITE_ACCESS_GATE_PRICE_MIST_TESTNET} \
     VITE_ACCESS_GATE_ID_MAINNET=${VITE_ACCESS_GATE_ID_MAINNET} \
     VITE_UPLOAD_RELAY_MAX_TIP_MIST=${VITE_UPLOAD_RELAY_MAX_TIP_MIST} \
     VITE_INDEXER_URL=${VITE_INDEXER_URL}
@@ -52,7 +50,7 @@ RUN npm run build && npm run licenses
 # ── runtime stage ─────────────────────────────────────────────────────────────
 # static-server is a minimal Go binary image. SPA_FALLBACK serves index.html
 # for any extensionless path (Vue Router history mode).
-FROM quay.io/meddleware-org/static-server:0.1.7@sha256:2e2273115b7575acbeb01c6d75f867be67125405f1bda5d956ae512d13c92379
+FROM quay.io/meddleware-org/static-server:0.1.8@sha256:e32cf42b182d270c4ef57181e5588e7df454a42cac66e83d8ae59d9c7b7c4000
 ARG CSP
 ENV CONTENT_SECURITY_POLICY="${CSP}"
 

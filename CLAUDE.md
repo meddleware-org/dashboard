@@ -59,19 +59,33 @@ participation ships. Do not remove the dependency.
   they are tabs within `/blockchain`.
 - **StatusWidget polls `https://status.meddleware.co.uk/api/status` every 60 s** via plain
   `fetch`. No external libraries. Three states: `ok`, `degraded`, `error`.
-- **One `@mysten/sui` in the tree — a direct dependency pinned exactly (`2.33.2`), no
-  `overrides`.** Two copies of `@mysten/sui` produce `#private`-mismatch type errors
-  (`Type 'X' is not assignable to type 'X'`) that break `vue-tsc`, because the shared
-  `@meddleware/wallet-adapter` `Executor` crosses every tool. Every embedded range admits
-  `2.33.2` — the `@meddleware/*` tools and SDKs declare `^2.33.1`; upstream `@mysten/seal`
-  1.4.17, `@mysten/walrus` 1.2.32 and `@mysten/wallet-standard` 0.21.31 declare `^2.33.2` — so npm
-  dedupes to the pin and an override is unnecessary. When bumping, pick the lowest version every embedded tool
-  admits, then confirm `npm ls @mysten/sui` shows a single version (all others `deduped`). Re-add
+- **One `@mysten/sui` in the tree — a direct dependency (`^2.36.0`), no `overrides`.** Two copies of
+  `@mysten/sui` produce `#private`-mismatch type errors (`Type 'X' is not assignable to type 'X'`) that
+  break `vue-tsc`, because the shared `@meddleware/wallet-adapter` `Executor` crosses every tool. The
+  embedded `@meddleware/*` tools and SDKs declare the same caret range, so npm dedupes to one copy and an
+  override is unnecessary. When bumping, keep the dashboard's range no lower than what every embedded
+  tool declares, then confirm `npm ls @mysten/sui` shows a single version (all others `deduped`). Re-add
   an `overrides` entry only if the embedded ranges stop overlapping.
 - **One `@meddleware/wallet-adapter` in the tree.** It is a module singleton: two copies are two
   wallet connections. This app holds the one real dependency; every embedded tool declares it as a
   peerDependency (`>=0.0.12 <0.2.0`). After a bump, confirm a single copy:
   `find node_modules -path '*@meddleware/wallet-adapter/package.json'` lists exactly one.
+
+## Tests and checks
+
+`npm test` (vitest, jsdom) pins the shell's contracts: the route table and tool imports
+(`tests/router.test.ts`), the network selector's mainnet guard (`tests/network-selector.test.ts`), the
+contract with design-tokens — no `--warning` text colour, no undefined custom property
+(`tests/design-tokens-used.test.ts`), the build-input inventory — Dockerfile ARGs, `.env.example` and the
+release build-args stay in step and no access-gate price variable exists (`tests/build-inputs.test.ts`),
+and the inline-script guard (`tests/inline-scripts.test.ts`). `npm run test:e2e` (Playwright, Chromium
+installed with `npx playwright install chromium`) builds the app, serves `dist` and mounts `/`, every
+tool tab of `/blockchain` and the legacy redirects with all external requests refused. `npm run check:dist`
+fails if a built page has an inline script (the CSP refuses it). CI (`node-ci.yml`) runs all of these, and
+both release workflows call it.
+
+The embedded tools take no props: each reads its own `VITE_*` configuration at bundle time. The relay
+access-gate price is read from the chain (walrus-relay 0.1.31); there is no price variable.
 
 ## Dependency order
 

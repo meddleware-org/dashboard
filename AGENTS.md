@@ -8,6 +8,8 @@ See [CLAUDE.md](CLAUDE.md) for architecture and scope constraints.
 npm install          # install deps (requires @meddleware/ui ^0.1.3 on npmjs or npm link)
 npm run dev          # dev server at http://localhost:5173
 npm run type-check   # TypeScript check only
+npm test             # unit tests (vitest)
+npm run test:e2e     # browser smoke test of the built app (Playwright)
 npm run build        # type-check + vite build → dist/
 ```
 
