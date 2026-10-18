@@ -38,7 +38,14 @@ Releases before 0.1.85 are recorded in the git history only.
   and the inline-script guard.
 - Browser smoke test (`npm run test:e2e`, Playwright): `/`, every tool tab of `/blockchain` and the legacy
   redirects mount in Chromium with no uncaught error and no network.
-- `npm run check:dist` fails the build when a built page has an inline script or event-handler attribute
+- CI builds the image (not pushed) and probes the running container with `scripts/smoke.sh`: non-root user,
+  read-only root, the in-image health check, `/` and the SPA fallback with the security headers and the CSP
+  (no `'unsafe-inline'` for scripts), immutable `/assets/`, `/THIRD_PARTY_LICENSES`, dot-files refused, POST
+  405 (audit F14). A Trivy filesystem scan (vulnerabilities, Dockerfile misconfiguration, secrets; fixable
+  CRITICAL/HIGH fail) runs beside it.
+- `tests/workflows.test.ts` pins the release gate: both release workflows call `node-ci.yml`, CI runs every
+  check above, third-party actions are pinned by SHA, the Dockerfile runs `check:dist` and sets the user.
+- `npm run check:dist` (also run by the Dockerfile) fails the build when a built page has an inline script or event-handler attribute
   that the CSP would refuse (audit F13).
 - `CHANGELOG.md` (listed in `files` but absent before).
 

@@ -78,11 +78,13 @@ participation ships. Do not remove the dependency.
 contract with design-tokens — no `--warning` text colour, no undefined custom property
 (`tests/design-tokens-used.test.ts`), the build-input inventory — Dockerfile ARGs, `.env.example` and the
 release build-args stay in step and no access-gate price variable exists (`tests/build-inputs.test.ts`),
-and the inline-script guard (`tests/inline-scripts.test.ts`). `npm run test:e2e` (Playwright, Chromium
+the inline-script guard (`tests/inline-scripts.test.ts`) and the release-gate contract
+(`tests/workflows.test.ts`). `npm run test:e2e` (Playwright, Chromium
 installed with `npx playwright install chromium`) builds the app, serves `dist` and mounts `/`, every
 tool tab of `/blockchain` and the legacy redirects with all external requests refused. `npm run check:dist`
 fails if a built page has an inline script (the CSP refuses it). CI (`node-ci.yml`) runs all of these, and
-both release workflows call it.
+both release workflows call it. CI also builds the image and probes the running container
+(`scripts/smoke.sh <image>`; `CONTAINER_ENGINE=podman` for rootless podman) and runs a Trivy filesystem scan.
 
 The embedded tools take no props: each reads its own `VITE_*` configuration at bundle time. The relay
 access-gate price is read from the chain (walrus-relay 0.1.31); there is no price variable.

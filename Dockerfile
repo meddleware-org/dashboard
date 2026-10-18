@@ -45,7 +45,8 @@ ENV VITE_NETWORK=${VITE_NETWORK} \
     VITE_UPLOAD_RELAY_MAX_TIP_MIST=${VITE_UPLOAD_RELAY_MAX_TIP_MIST} \
     VITE_INDEXER_URL=${VITE_INDEXER_URL}
 
-RUN npm run build && npm run licenses
+# The CSP has no 'unsafe-inline' for scripts: the build fails if dist/ ever carries an inline <script>.
+RUN npm run build && npm run check:dist && npm run licenses
 
 # ── runtime stage ─────────────────────────────────────────────────────────────
 # static-server is a minimal Go binary image. SPA_FALLBACK serves index.html
