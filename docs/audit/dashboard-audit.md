@@ -4,21 +4,21 @@
 **Project:** `repos/dashboard` — `@meddleware/dashboard`, Vue 3 hub (`dash.meddleware.co.uk`) hosting the tool views inline: Treasury at `/`, and Walrus Storage, Sealed Storage, Access Gate and Token Deployer as tabs at `/blockchain`
 **Project type:** Vue app
 **Template:** AUDIT_TEMPLATE.md (2026-10-08) + AUDIT_TEMPLATE_TS.md (2026-10-08) + AUDIT_TEMPLATE_VUE.md (2026-10-08) + AUDIT_TEMPLATE_IMG.md (2026-10-08). `AUDIT_TEMPLATE_SUI_CLIENT.md` is not triggered: the shell builds no PTBs, reads no Move objects or events and verifies no signatures — `suiBoundary()` (eslint-config 0.0.2) fails CI on any such code in `src/`; the chain surface lives in the embedded tools and their clients (own audits).
-**Sui SDK:** `@mysten/sui ^2.33.2` (one copy, resolves 2.35.0)   **Transport:** through the embedded tools and wallet-adapter
-**Package manager / lockfile:** npm 11, committed (385 locked packages; 118 production)   **Publish model:** ships source + SPA image
+**Sui SDK:** `@mysten/sui ^2.36.0` (one copy, resolves 2.36.0)   **Transport:** through the embedded tools and wallet-adapter
+**Package manager / lockfile:** npm 11, committed (453 locked packages; 127 production)   **Publish model:** ships source + SPA image
 **Runtime targets:** browser
-**Build tool:** vite 8.3.3, @vitejs/plugin-vue 6.0.9, vue 3.5.43, vue-router 5.3, vue-tsc 3.3   **Hosting:** container image (static-server 0.1.7); no static host / `_headers`   **Embedding hosts:** none (this is the host of the tool views)
-**VITE_\* inventory:** build args baked at build, testnet only, no secrets: `VITE_NETWORK` (default `testnet`), `VITE_WALRUS_RELAY_TESTNET|MAINNET`, `VITE_RPC_TESTNET|MAINNET`, `VITE_ACCESS_GATE_ID_TESTNET|MAINNET` (relay gate — read by access-gate-ui/walrus-ui), `VITE_ACCESS_GATE_SOULBOUND_TESTNET`, `VITE_ACCESS_GATE_PRICE_MIST_TESTNET`, `VITE_UPLOAD_RELAY_MAX_TIP_MIST`, `VITE_INDEXER_URL`; shell-only `VITE_DOCS_URL`, `VITE_DEV_URL`; committed in `.env.production`: `VITE_FEE_TREASURY_TESTNET|MAINNET` (token-deployer fee address, public). Repository variables set 2026-10-09: gate `0x316f1bf9…faddc` (see F16 for inventory gaps)
-**Images:** `quay.io/meddleware-org/dashboard:0.1.84@sha256:e8957db3d880d593b19e0c0e32e2a858887879505e969b5bec7cd804734cb34e` (Docker Hub mirror `meddleware/dashboard`, same digest)
-**Base images:** build `node:24-slim@sha256:0e0ff40c…f9b6`; runtime `quay.io/meddleware-org/static-server:0.1.7@sha256:2e227311…2379` (Go 1.26.9)
+**Build tool:** vite 8.3.4, @vitejs/plugin-vue 6.0.10, vue 3.5.44, vue-router 5.4, vue-tsc 3.3.13   **Hosting:** container image (static-server 0.1.8); no static host / `_headers`   **Embedding hosts:** none (this is the host of the tool views)
+**VITE_\* inventory:** build args baked at build, testnet only, no secrets: `VITE_NETWORK` (default `testnet`), `VITE_WALRUS_RELAY_TESTNET|MAINNET`, `VITE_RPC_TESTNET|MAINNET`, `VITE_ACCESS_GATE_ID_TESTNET|MAINNET` (relay gate — read by access-gate-ui/walrus-ui), `VITE_ACCESS_GATE_SOULBOUND_TESTNET`, `VITE_UPLOAD_RELAY_MAX_TIP_MIST`, `VITE_INDEXER_URL`; shell-only `VITE_DOCS_URL`, `VITE_DEV_URL`; committed in `.env.production`: `VITE_FEE_TREASURY_TESTNET|MAINNET` (token-deployer fee address, public). Repository variables set 2026-10-09: gate `0x316f1bf9…faddc` (`VITE_ACCESS_GATE_PRICE_MIST_TESTNET` is removed in 0.1.85: the price is read from the chain, F18; the inventory is `.env.example`, pinned by `tests/build-inputs.test.ts`, F16)
+**Images:** `quay.io/meddleware-org/dashboard:0.1.84@sha256:e8957db3d880d593b19e0c0e32e2a858887879505e969b5bec7cd804734cb34e` (Docker Hub mirror `meddleware/dashboard`, same digest); 0.1.85 is prepared (not yet released or deployed)
+**Base images:** build `node:24-slim@sha256:0e0ff40c…f9b6`; runtime `quay.io/meddleware-org/static-server:0.1.8@sha256:e32cf42b…4000` (0.1.84 deployed on 0.1.7, Go 1.26.9)
 **Runtime user:** 65534:65534 (`USER` in the Dockerfile, `runAsNonRoot` in the pod)   **Runtime FS:** read-only root, nothing writable mounted
 **Deployed by:** `post-bootstrap/dashboard/overlays/default` (digest from `config/images.yaml`)
 **Build args:** the `VITE_*` list above and `CSP` — public configuration, none secret
 **Deployment status:** npm v0.1.84 (2026-10-09, trusted publishing); image `quay.io/meddleware-org/dashboard` serving `dash.meddleware.co.uk` at 0.1.84 (deployed 2026-10-09; live headers checked 2026-10-09; cosign signature valid, `verify-digests.sh` 16/16)
-**Review date:** 2026-09-18 (first pass) · re-verified 2026-10-03 · re-verified 2026-10-09
+**Review date:** 2026-09-18 (first pass) · re-verified 2026-10-03 · re-verified 2026-10-09 · fix wave 2026-10-18 (0.1.85)
 **Reviewer:** Internal review
 **Severity ceiling:** Medium — it owns the one wallet connection every embedded tool signs through, so its ceiling is the union of the tools' signing surfaces. No High or Critical in dashboard code.
-**Status:** re-verified 2026-10-09 — 17 findings (2 Positive): 8 RESOLVED, 1 ADJUDICATED, 1 MITIGATED, 4 ACCEPTED-RISK, 1 DEFERRED
+**Status:** fix wave 2026-10-18 (0.1.85, not yet released) — 20 findings (2 Positive): 15 RESOLVED, 1 ADJUDICATED, 1 ACCEPTED-RISK, 1 DEFERRED
 
 ---
 
@@ -48,17 +48,26 @@ live headers and the repository settings, and applied the container-image lens (
   tools and serves `/THIRD_PARTY_LICENSES`.
 - **F11 (Info, RESOLVED 0.1.83, `b86e18c`)** — runtime base moved to static-server 0.1.7 (Go 1.26.9)
   and the Dockerfile sets `USER 65534:65534`.
-- **F12–F16 (Low/Info, recorded)** — the CSP's `connect-src`/`img-src` allow any `https:` origin
-  (ACCEPTED-RISK); no build-time inline-script check (MITIGATED by the CSP); no image config scan or
-  container probe in CI, an npm publish gate narrower than CI, and an incomplete `VITE_*` inventory in
-  `.env.example` (ACCEPTED-RISK, none with a security effect).
+- **F12–F16 (Low/Info, recorded 2026-10-09)** — the CSP's `connect-src`/`img-src` allow any `https:`
+  origin (ACCEPTED-RISK); no build-time inline-script check (F13), no image config scan or container probe
+  in CI (F14), an npm publish gate narrower than CI (F15) and an incomplete `VITE_*` inventory (F16) were
+  accepted or mitigated then and are RESOLVED in the 2026-10-18 fix wave.
 - **F17 (Low, DEFERRED)** — registry pushes still use long-lived tokens (`OPERATOR_TASKS.md`,
   "Image registry credentials").
 
+The 2026-10-18 fix wave (0.1.85, prepared, not released) embeds the 2026-10-18 builds of every tool
+(walrus-relay 0.1.31: the access-gate price is read from the chain) and found and fixed three more:
+
+- **F18 (Info, RESOLVED)** — the `VITE_ACCESS_GATE_PRICE_MIST_TESTNET` build input is removed everywhere.
+- **F19 (Low, RESOLVED)** — the npm bundled with Node 24.13 cannot verify the newest attestations; CI pins
+  npm 11.20.0 for the signature step.
+- **F20 (Low, RESOLVED)** — the shell now has 65 unit tests and a Playwright smoke test that mounts `/`, each
+  tool tab and the legacy redirects of the built app (grade C to B).
+
 No High or Critical. The posture is unchanged: the shell is thin, and its main concern is the supply
 chain of the packages it mounts next to one wallet, which is now covered by the audit gate,
-signature and provenance verification, a single copy of each shared package and a CI release gate
-equal to branch CI.
+signature and provenance verification, a single copy of each shared package, an inline-script guard, an
+image probe and a CI release gate equal to branch CI for both the image and the npm package.
 
 ## Threat model / trust boundaries
 
@@ -79,19 +88,22 @@ Critical / High / Medium / Low / Info / Positive.
 
 ## Scope
 
-- **In scope (0.1.84):** `src/main.ts`, `src/App.vue`, `src/router/index.ts`,
+- **In scope (0.1.85):** `src/main.ts`, `src/App.vue`, `src/router/index.ts`,
   `src/views/BlockchainView.vue`, `src/components/{NetworkSelector,ChainSelector}.vue`, `index.html`,
-  `Dockerfile`, `.dockerignore`, the three workflows, `scripts/third-party-licenses.mjs`,
+  `Dockerfile`, `.dockerignore`, the three workflows, `scripts/` (licences, inline-script check, image probe), `tests/`, `e2e/`,
   `SECURITY.md`, the resolved dependency tree, and the deployment in
   `post-bootstrap/dashboard/` (read-only).
 - **Out of scope:** the embedded tools, wallet-adapter, ui, the clients (own audits).
-- **Environment (2026-10-09):** `vue-tsc`; stylelint, eslint (with `suiBoundary()`), html-validate
-  all clean; audit gate (1 allowlisted dev-tooling advisory, 0 open; `npm audit --omit=dev` finds 0
-  vulnerabilities); `npm audit signatures`: 362 packages with verified signatures, 143 with verified
-  attestations; `npm run check:licenses` (118 production packages); `npm pack --dry-run` (12 files);
-  one copy of `@mysten/sui` (2.35.0) and of each `@meddleware/*` package (`npm ls`). No unit tests
-  (shell only). Live: `curl -I` of `dash.meddleware.co.uk/` and `/blockchain`, and
-  `/THIRD_PARTY_LICENSES`; repository variables and recent workflow runs read with `gh`.
+- **Environment (2026-10-18, 0.1.85):** `vue-tsc` (sources, tests, e2e); stylelint, eslint (with
+  `suiBoundary()`), html-validate all clean; audit gate (1 allowlisted dev-tooling advisory, 0 open;
+  `npm audit --omit=dev` finds 0 vulnerabilities); `npx npm@11.20.0 audit signatures`: 430 packages with
+  verified signatures, 185 with verified attestations (npm 11.6.2 fails, F19); `npm run check:licenses` (127
+  production packages); `npm pack --dry-run` (13 files, with `CHANGELOG.md`); one copy of `@mysten/sui`
+  (2.36.0), of wallet-adapter and of each `@meddleware/*` package (`npm ls`, `find node_modules`);
+  `npm test` 65 tests in 6 files; `npm run test:e2e` 3 tests; `podman build` and `scripts/smoke.sh` on the
+  image (rootless podman). Live state is that of 2026-10-09 (0.1.84): `curl -I` of
+  `dash.meddleware.co.uk/` and `/blockchain`, and `/THIRD_PARTY_LICENSES`; repository variables and recent
+  workflow runs read with `gh` (the variables again on 2026-10-18).
 
 ## Findings
 
@@ -233,65 +245,81 @@ the mainnet endpoint list; narrowing `img-src` follows the image policy of the t
 
 ### F13 — No build-time check for inline scripts
 
-**Severity:** Low   **Disposition:** MITIGATED
-**Where:** `.github/workflows/node-ci.yml`, `Dockerfile`
+**Severity:** Low   **Disposition:** RESOLVED (0.1.85, commit pending)
+**Where:** `.github/workflows/node-ci.yml`, `Dockerfile`, `scripts/check-inline-scripts.mjs`
 **Issue:** B.VUE-1 asks for a build-time check that fails when the build emits an inline script not
-covered by the CSP. The dashboard has none. Today the build emits none (`index.html` carries one
-`<script type="module" src>` and the built page references only `/assets/*.js`; the one inline
-script on the live page is Cloudflare's, injected at the edge and covered by the response nonce).
+covered by the CSP. The dashboard had none; the build emits none (`index.html` carries one
+`<script type="module" src>` and references only `/assets/*.js`; the one inline script on the live page is
+Cloudflare's, injected at the edge and covered by the response nonce).
 **Impact:** a future dependency or plugin that injects an inline script would be blocked by the
 browser rather than caught in CI; the failure would show only in a browser sweep.
-**Remediation / evidence:** compensating control: `script-src` has no `'unsafe-inline'`, so an
-uncovered inline script is refused at runtime (fail closed). Adding a CI step that greps
-`dist/index.html` for inline `<script>` without `src` is in the implementation suggestions.
+**Remediation / evidence:** `npm run check:dist` (`scripts/check-inline-scripts.mjs`) fails on any
+`<script>` without `src`, any `<script src>` that also has a body, and any inline event-handler attribute
+in a built HTML file. The Dockerfile runs it right after `npm run build` (the image build fails) and
+`node-ci.yml` runs it after the build. `tests/inline-scripts.test.ts` pins the check on the Vite page shape,
+the failing shapes and the source `index.html`; `tests/workflows.test.ts` pins that CI and the Dockerfile
+run it. Runtime: `script-src` has no `'unsafe-inline'`, so an uncovered inline script is refused anyway.
 
 ### F14 — No image configuration scan or container probe in CI
 
-**Severity:** Low   **Disposition:** ACCEPTED-RISK
-**Where:** `.github/workflows/`
+**Severity:** Low   **Disposition:** RESOLVED (0.1.85, commit pending)
+**Where:** `.github/workflows/node-ci.yml`, `scripts/smoke.sh`
 **Issue:** the IMG lens (Section C) asks CI to scan the Dockerfile and manifests (e.g. Trivy config)
-and to probe the running container (health, served headers, non-root). The dashboard's CI scans the
-published image for vulnerabilities (F10) but runs neither. The manifests live in the workspace, not
+and to probe the running container (health, served headers, non-root). The dashboard's CI scanned the
+published image for vulnerabilities (F10) but ran neither. The manifests live in the workspace, not
 this repository.
-**Impact:** a regression in the Dockerfile or served headers is found at deployment or in a manual
+**Impact:** a regression in the Dockerfile or served headers was found at deployment or in a manual
 sweep, not at the pull request.
-**Remediation / evidence:** accepted: the Dockerfile is two stages with digest-pinned bases and the
-runtime settings are inherited from the audited static-server; the headers, `/THIRD_PARTY_LICENSES`
-and the non-root pod were verified by hand on 2026-10-09 (this audit's Section A/B) and the image is
-re-verified by `bootstrap/images/verify-digests.sh` (cosign, 16/16 valid on 2026-10-09). A
-`trivy config` step and a header probe are in the implementation suggestions.
+**Remediation / evidence:** the `image` job builds the Dockerfile (not pushed) and runs `scripts/smoke.sh`
+on it as the cluster does (image user `65534:65534`, read-only root, all capabilities dropped,
+no-new-privileges): the in-image `-healthcheck`; `/` and the SPA fallback `/blockchain` answer 200 with the
+shell, `Cache-Control: no-cache` and the nosniff, X-Frame-Options, Referrer-Policy, HSTS,
+Permissions-Policy and CSP headers (`script-src 'self' 'wasm-unsafe-eval'` plus a fresh nonce, no
+`'unsafe-inline'`); the bundle is served from `/assets/` as immutable; a missing `/assets/` file is a 404
+without `Cache-Control`; `/THIRD_PARTY_LICENSES` is served; `/.env` is a 404 and POST a 405. Run locally with
+rootless podman on 2026-10-18: passed. The `scan` job runs Trivy over the repository
+(`vuln,misconfig,secret`, fixable CRITICAL/HIGH fail), which covers the Dockerfile. The Kubernetes manifests
+stay in the workspace (`post-bootstrap/dashboard/`; their pod hardening is recorded in F11). The jobs are
+in the workflow both releases call; `tests/workflows.test.ts` pins the commands. The Trivy job has not run
+yet (first run on the 0.1.85 push): if it reports a misconfiguration in the Dockerfile, fix the Dockerfile.
 
 ### F15 — npm publish gate is narrower than CI
 
-**Severity:** Info   **Disposition:** ACCEPTED-RISK
+**Severity:** Info   **Disposition:** RESOLVED (0.1.85, commit pending)
 **Where:** `.github/workflows/npm-publish.yml`
-**Issue:** the Docker release calls `node-ci.yml` (F10), but the npm publish workflow has its own
-`verify` job (audit gate, signatures, type-check, unit tests) and builds in the publish job; it skips
+**Issue:** the Docker release calls `node-ci.yml` (F10), but the npm publish workflow had its own
+`verify` job (audit gate, signatures, type-check, unit tests) and built in the publish job; it skipped
 the three linters and the licence check. `NPM_PUBLISH=true` is set, so `@meddleware/dashboard` is
 published on every tag (OIDC trusted publishing with provenance; the npm client pinned to 11.20.0;
 publish is idempotent against the registry).
 **Impact:** a tag with a lint failure could publish to npm while the image release fails. The npm
 package is the app's source for embedding and is consumed by nothing in the workspace.
-**Remediation / evidence:** accepted because both workflows trigger on the same tag and the image
-release, which is what runs in production, is gated on the full CI; the npm package has no
-consumers. Calling `node-ci.yml` from `verify` would close it (implementation suggestions).
+**Remediation / evidence:** `verify` is now `uses: ./.github/workflows/node-ci.yml`, as in
+access-gate-ui and treasury-ui, so the package is released only if the commit passes exactly what CI
+runs. `tests/workflows.test.ts` pins that both release workflows call `node-ci.yml`.
 
 ### F16 — Build-input inventory incomplete or stale in the repository's docs
 
-**Severity:** Info   **Disposition:** ACCEPTED-RISK
+**Severity:** Info   **Disposition:** RESOLVED (0.1.85, commit pending)
 **Where:** `.env.example`, `.env.production`, `Dockerfile`, workflows, `CLAUDE.md`, `package.json`
 **Issue:** the VUE lens asks that every `VITE_*` variable the build reads appears in `.env.example`.
-`.env.example` lists only `VITE_DOCS_URL` and `VITE_DEV_URL`; the tool views read the other
-variables, which are documented only as `ARG`s in the Dockerfile. `VITE_RPC_TESTNET|MAINNET` and
+`.env.example` listed only `VITE_DOCS_URL` and `VITE_DEV_URL`; the tool views read the other
+variables, documented only as `ARG`s in the Dockerfile. `VITE_RPC_TESTNET|MAINNET` and
 `VITE_ACCESS_GATE_ID_MAINNET` are declared as build args but the workflows never pass them (they
 resolve to empty); `.env.production` commits `VITE_FEE_TREASURY_*` (public addresses) with a comment
 naming the retired package `@meddleware/token-deployer-sui`, and they are not build args. `CLAUDE.md`
-says `@mysten/sui` is "pinned exactly (`2.33.2`)" (it is `^2.33.2`), and `package.json` `files` lists
-a `CHANGELOG.md` that does not exist.
+said `@mysten/sui` was "pinned exactly (`2.33.2`)" (it was `^2.33.2`), and `package.json` `files` listed
+a `CHANGELOG.md` that did not exist. The two registry-mirror builds also lacked
+`VITE_WALRUS_RELAY_MAINNET`, so the mirror could carry a different bundle from the public image.
 **Impact:** documentation drift only; no variable is a secret (F4) and none selects an on-chain ID
 that is not also set in the embedded client's `deployments`.
-**Remediation / evidence:** accepted as hygiene with no security effect; the corrections are in the
-implementation suggestions. The inventory in this audit's front matter is the checked list.
+**Remediation / evidence:** `.env.example` lists every build input with its purpose (the unset
+`VITE_RPC_*` and `VITE_ACCESS_GATE_ID_MAINNET` are kept as documented operator/mainnet inputs, marked as not
+passed by the release); `.env.production` names `@meddleware/token-deployer-ui`; `CLAUDE.md` states the
+`^2.36.0` range; `CHANGELOG.md` exists; `SECURITY.md` names the Treasury and Token Deployer views; the four
+image builds pass one set of build arguments. `tests/build-inputs.test.ts` pins it: every Dockerfile `ARG`
+is baked and documented in `.env.example`, every variable the shell reads is documented, all four
+`build-args` blocks are identical and name only declared arguments, and both base images are digest-pinned.
 
 ### F17 — Image pushes use long-lived registry tokens
 
@@ -310,19 +338,66 @@ shared accounts. The verification command (`verify-digests.sh`) pins the OIDC is
 regexp `https://github.com/meddleware-org/dashboard/` (repository-anchored, any workflow and tag in
 it). The self-hosted mirror is listed as best-effort and unsigned in B.2.
 
+### F18 — Access-gate price configured at build time (superseded: read from the chain)
+
+**Severity:** Info   **Disposition:** RESOLVED (0.1.85, commit pending)
+**Where:** `Dockerfile`, `.github/workflows/docker-publish.yml`, `.env.example`, `CLAUDE.md`
+**Issue:** the image accepted `VITE_ACCESS_GATE_PRICE_MIST_TESTNET`, a price the embedded tools used to
+show and sign for. `@meddleware/walrus-relay` 0.1.31 reads the price from the gate on the chain (and shows
+payees, network and pass kind before the wallet opens); `walrus-ui` 0.1.58 and `token-deployer-ui` 0.0.36 no
+longer read the variable.
+**Impact:** a stale build value could not be trusted and no longer affected the tools; leaving it would
+suggest a price is configured here.
+**Remediation / evidence:** the variable is removed from the Dockerfile, the four `build-args` blocks, the
+docs and `.env.example`; the tools are embedded at walrus-ui ^0.1.58, token-deployer-ui ^0.0.36 and
+access-gate-ui ^0.1.37 (clients: walrus-client 0.0.28, access-gate-client 0.0.9, seal-client 0.0.20,
+sui-token-client 0.0.11; walrus-relay 0.1.31). `tests/build-inputs.test.ts` fails if `PRICE_MIST` returns to
+any of those files. Maintainer: the repository variable `VITE_ACCESS_GATE_PRICE_MIST_TESTNET` (set 2026-09-29)
+is now unused and can be deleted. The gate id and soulbound variables still select the gate; with the
+production values (`0x316f1bf9…faddc`, soulbound) built in, the Walrus tab mounts with no console warning
+(the tools log one when the gate config is rejected).
+
+### F19 — Signature check failed on the npm bundled with Node 24.13
+
+**Severity:** Low   **Disposition:** RESOLVED (0.1.85, commit pending)
+**Where:** `.github/workflows/node-ci.yml`
+**Issue:** `npm audit signatures` with npm 11.6.2 (the npm of Node 24.13) fails with `EMISSINGSIGNATUREKEY`
+("has attestations but no corresponding public key(s) can be found") on `@meddleware/token-deployer-ui`
+0.0.36, whose attestation was published with the newer client. npm 11.20.0 (the client the publish job
+pins) verifies the same tree: 430 packages with verified signatures, 185 with verified attestations.
+**Impact:** the release gate (F9, F10) could fail for a tree that is in fact valid, or a gate that cannot
+read current attestations would tempt a bypass.
+**Remediation / evidence:** CI installs npm 11.20.0 before the install and the signature step;
+`tests/workflows.test.ts` pins that the upgrade precedes `npm audit signatures`. Verified locally with
+`npx npm@11.20.0 audit signatures` on 2026-10-18.
+
+### F20 — No automated check that the built shell mounts every tool
+
+**Severity:** Low   **Disposition:** RESOLVED (0.1.85, commit pending)
+**Where:** `e2e/routes.spec.ts`, `tests/`
+**Issue:** the shell had no tests (C.1 grade C); a tool that throws on import or mount after a dependency
+bump (as the walrus-relay 0.1.31 gate contract could) was found only in a manual sweep.
+**Impact:** a broken tool route could be released.
+**Remediation / evidence:** `npm run test:e2e` (Playwright, Chromium) builds the app, serves it with
+`vite preview`, refuses every request that leaves localhost and asserts that `/` shows Treasury, that each
+of the four tabs of `/blockchain` shows its tool body, that the four legacy paths land on `/blockchain` and
+that no uncaught page error occurs (3 tests, PASS 2026-10-18). `npm test` (vitest, 65 tests, 6 files) pins the
+route table and lazy tool imports, the network selector's mainnet guard (I7), design-token use, the build
+inputs, the inline-script check and the release-gate workflows. Both run in `node-ci.yml`.
+
 ## Section A — Invariant verification matrix
 
 | # | Invariant | Enforced at | Proven by | Status |
 | --- | --- | --- | --- | --- |
 | I1 | One wallet connection, requested with the tools' superset of features | `App.vue` `useWallet` | source | HOLDS (by design) |
-| I2 | Tools are first-party components from npm, never iframes | `router/index.ts`, `BlockchainView.vue` | source | HOLDS |
+| I2 | Tools are first-party components from npm, never iframes | `router/index.ts`, `BlockchainView.vue` | `tests/router.test.ts`; `e2e/routes.spec.ts` | HOLDS |
 | I3 | No transaction construction or accounting in the shell | source | `suiBoundary` trial (B8) | HOLDS |
-| I4 | One copy of `@mysten/sui` and of each `@meddleware/*` package | lockfile | `npm ls` (2026-10-09) | HOLDS |
+| I4 | One copy of `@mysten/sui` and of each `@meddleware/*` package | lockfile | `npm ls`, `find node_modules` (2026-10-18) | HOLDS |
 | I5 | No HTML sinks; no secrets | source; Dockerfile | grep | HOLDS (F4, F5) |
 | I6 | Installed packages carry valid registry signatures | `npm audit signatures` | CI | HOLDS (F9) |
-| I7 | Mainnet cannot be selected before launch | `NetworkSelector` disables the mainnet option and resets mainnet to testnet once connected | source | HOLDS (code-only) |
+| I7 | Mainnet cannot be selected before launch | `NetworkSelector` disables the mainnet option and resets mainnet to testnet once connected | `tests/network-selector.test.ts` | HOLDS |
 | I8 | A release cannot ship what CI refuses, and the image is scanned before it is signed | `docker-publish.yml` `verify` → `node-ci.yml`; Trivy step before `cosign sign` | workflow files; run `v0.1.84` | HOLDS (F10) |
-| I9 | The served page carries CSP and HSTS and no inline script outside the response nonce | Dockerfile `CSP`; Cloudflare zone HSTS | `curl -I` 2026-10-09 | HOLDS (F12, F13) |
+| I9 | The served page carries CSP and HSTS and no inline script outside the response nonce | Dockerfile `CSP`; Cloudflare zone HSTS | `curl -I` 2026-10-09; `check:dist`; `scripts/smoke.sh` | HOLDS (F12, F13, F14) |
 
 ### Lens categories
 
@@ -331,23 +406,23 @@ it). The self-hosted mirror is listed as best-effort and unsigned in B.2.
 | TS | Supply chain | HOLDS — audit gate, signatures (F9), no unused runtime deps (F8) |
 | TS | Compiler strictness | `strict: true`; `noUncheckedIndexedAccess` off — the shell parses no untrusted data (status parsing is ui's, `parseSnapshot`) |
 | TS | Network I/O, dynamic code, secrets | N/A in the shell — no `fetch`, `eval` or dynamic `import()` of a non-literal (the tool imports are literals) |
-| TS | Packaging (B.TS-1/2) | HOLDS — `files` whitelist, `npm pack --dry-run` lists 12 files (sources, `index.html`, configs), no `.env*`; no lifecycle scripts, no `overrides` (F1) |
+| TS | Packaging (B.TS-1/2) | HOLDS — `files` whitelist, `npm pack --dry-run` lists 13 files (sources, `index.html`, configs, `CHANGELOG.md`), no `.env*`; no lifecycle scripts, no `overrides` (F1) |
 | VUE | Untrusted rendering | HOLDS (F5) |
 | VUE | Colour & links | through ui/design-tokens (contrast gate in their audits); the shell adds only brand and sidebar styles |
-| VUE | Build-time configuration | HOLDS for secrets (F4); inventory gaps in F16 |
+| VUE | Build-time configuration | HOLDS - no secrets (F4); the inventory is `.env.example`, pinned by `tests/build-inputs.test.ts` (F16, F18) |
 | VUE | Test hooks (Vite) | N/A — no test mode, mock wallet or `window.__*` hook exists; no `MODE` branch in `src/` |
 | VUE | Signing UX | N/A — the shell builds no transactions; signing flows are in the tools |
 | VUE | Shared-wallet state | HOLDS — the tools follow account and network changes (their audits); one wallet-adapter 0.0.17 copy |
 | VUE | Lazy boundaries | HOLDS — every tool view is a lazy chunk; Walrus wasm loads on first use |
 | VUE | Browser storage | through ui (colour mode) and wallet-adapter (network), both non-throwing |
 | VUE | Dual app / library | N/A — host only |
-| VUE | Hosting headers (B.VUE-1) | HOLDS with F12 (ACCEPTED-RISK `https:`) and F13 (no build-time inline-script check) |
-| IMG | Base images, build context, reproducible build | HOLDS — `node:24-slim` and static-server 0.1.7 digest-pinned; `.dockerignore` excludes `.env*.local`; `npm ci`; the committed `.env.production` is deliberate (F16) |
+| VUE | Hosting headers (B.VUE-1) | HOLDS with F12 (ACCEPTED-RISK `https:`); the inline-script check is `check:dist` (F13); the probe asserts the headers (F14) |
+| IMG | Base images, build context, reproducible build | HOLDS — `node:24-slim` and static-server 0.1.8 digest-pinned; `.dockerignore` excludes `.env*.local`; `npm ci`; the committed `.env.production` is deliberate (F16) |
 | IMG | No secrets in layers | HOLDS — build args are public `VITE_*` values and `CSP` |
 | IMG | Runtime user & filesystem | HOLDS — `USER 65534:65534`; pod hardened, `automountServiceAccountToken: false` (F11) |
 | IMG | SBOM & notices, scan before sign | HOLDS — lockfile in image, `/THIRD_PARTY_LICENSES`, Trivy before cosign (F10) |
 | IMG | Verification command, deployment pinning | HOLDS — `verify-digests.sh` pins issuer and repository identity (F17); overlay pins the digest from `config/images.yaml` |
-| IMG | Config scan and container probe in CI | GAP accepted (F14) |
+| IMG | Config scan and container probe in CI | HOLDS - `image` job (build, `scripts/smoke.sh`) and Trivy `scan` job (F14); the Trivy job has its first run on the 0.1.85 push |
 
 ## Section B — Supply-chain, publish-authority & capability matrix
 
@@ -355,15 +430,15 @@ it). The self-hosted mirror is listed as best-effort and unsigned in B.2.
 
 | Dependency | Pinned version | Liveness dependency? | CVE / audit status | Notes |
 | --- | --- | --- | --- | --- |
-| walrus-ui / seal-ui / access-gate-ui / token-deployer-ui / treasury-ui | `^0.1.56` / `^0.0.36` / `^0.1.35` / `^0.0.34` / `^0.0.16` (locked at the same versions) | each tool | clean 2026-10-09 | the 2026-10-09 builds; walrus-ui 0.1.57 and token-deployer-ui 0.0.35 (release-gate-only changes) are newer than the lock — no functional difference |
-| dao-ui | `^0.1.32` | none (route disabled) | clean | retained for re-enabling; not bundled |
+| walrus-ui / seal-ui / access-gate-ui / token-deployer-ui / treasury-ui | `^0.1.58` / `^0.0.38` / `^0.1.37` / `^0.0.36` / `^0.0.18` (locked at the same versions) | each tool | clean 2026-10-18 | the 2026-10-18 builds (walrus-relay 0.1.31; clients walrus-client 0.0.28, access-gate-client 0.0.9, seal-client 0.0.20, sui-token-client 0.0.11) |
+| dao-ui | `^0.1.34` | none (route disabled) | clean | retained for re-enabling; not bundled |
 | `@meddleware/wallet-adapter` | `^0.0.17` | wallet | clean | the one copy |
-| `@meddleware/ui` / `design-tokens` | `^0.1.31` / `^0.1.9` | shell | clean | |
+| `@meddleware/ui` / `design-tokens` | `^0.1.31` / `^0.1.10` | shell | clean | |
 | `@meddleware/eslint-config` (dev) | `^0.0.2` | CI | clean | `suiBoundary()` |
-| `@mysten/sui` | `^2.33.2` (2.35.0) | everything | clean | one copy; ADR-0001 baseline `^2.33.1` |
-| `vue` / `vue-router` / `vite` / `@vitejs/plugin-vue` / `typescript` | `^3.5.43` / `^5.3.0` / `^8.3.0` / `^6.0.9` / `~6.0.0` | build and runtime | clean | TypeScript 7 deferred (decision); vitest not used |
-| Base images | `node:24-slim@sha256:0e0ff40c…`, `static-server:0.1.7@sha256:2e227311…` | runtime: static-server serves the bundle | Trivy on the published image, CRITICAL/HIGH fixable fail | static-server on Go 1.26.9 |
-| Embedded-tool dependency tree | 385 locked packages (118 production) | — | `npm audit --omit=dev`: 0; allowlist: `braces` GHSA-vfj7-8cjw-p6xm (dev tooling, expires 2027-01-01) | signatures 362, attestations 143 |
+| `@mysten/sui` | `^2.36.0` (2.36.0) | everything | clean | one copy; the tools declare the same range |
+| `vue` / `vue-router` / `vite` / `@vitejs/plugin-vue` / `typescript` | `^3.5.44` / `^5.4.0` / `^8.3.4` / `^6.0.10` / `~6.0.0` | build and runtime | clean | TypeScript 7 deferred (decision); vitest 5.0 and Playwright 1.63 (dev) |
+| Base images | `node:24-slim@sha256:0e0ff40c…`, `static-server:0.1.8@sha256:e32cf42b…` | runtime: static-server serves the bundle | Trivy on the published image (release) and on the repository (CI), CRITICAL/HIGH fixable fail | static-server 0.1.8 |
+| Embedded-tool dependency tree | 453 locked packages (127 production) | — | `npm audit --omit=dev`: 0; allowlist: `braces` GHSA-vfj7-8cjw-p6xm (dev tooling, expires 2027-01-01) | signatures 430, attestations 185 (npm 11.20.0) |
 
 ### B.2 Publish authority, capabilities & secret custody
 
@@ -373,34 +448,41 @@ it). The self-hosted mirror is listed as best-effort and unsigned in B.2.
 | `QUAY_TOKEN`, `DOCKERHUB_TOKEN` (+ usernames) | GitHub secrets (set 2026-09-02) | robot accounts | image push | scope and rotation to be recorded (F17) |
 | image signing, SBOM and provenance attestations | GitHub Actions (`merge-docker-public`) | cosign keyless; SPDX SBOM attestation; build provenance, pushed to the registry; no `continue-on-error` on the public path | images (index digest) | n/a |
 | self-hosted registry mirror | `*-private` jobs | `PRIVATE_REGISTRY_*` not set; `continue-on-error`, unsigned | none (best-effort) | maintainer item |
-| Workflow hygiene | `.github/workflows/*` | Actions pinned by full SHA; `permissions:` per workflow and job (`id-token`/`attestations: write` only on the merge job and the npm publish job); release gate = `node-ci.yml` via `workflow_call` (Docker) — see F15 for npm; Dependabot weekly, grouped (npm, docker, github-actions) | all | n/a |
+| Workflow hygiene | `.github/workflows/*` | Actions pinned by full SHA; `permissions:` per workflow and job (`id-token`/`attestations: write` only on the merge job and the npm publish job); release gate = `node-ci.yml` via `workflow_call` (Docker and npm, F15); CI pins npm 11.20.0 for the signature step (F19); Dependabot weekly, grouped (npm, docker, github-actions) | all | n/a |
 
 ## Section C — Test-coverage & hermetic/live split
 
-### C.1 Coverage grade — C (shell; no unit tests)
+### C.1 Coverage grade — B (65 unit tests, 3 browser tests, 2026-10-18)
 
-Count at 2026-10-09: 0 unit tests (vitest is not used; the shell has no logic to test). Gates run in
-CI on every push and on the release: `vue-tsc --noEmit`, stylelint, eslint (vue-a11y and
-`suiBoundary()`), html-validate, the production build, the audit gate, `npm audit signatures` and the
-licence check. The tools carry their own tests; the shell is exercised by the live sweep and the
-gated `e2e:walrus` run (token-deployer-ui repository, `scripts/e2e-walrus-browser.mjs`) against the
-production dashboard. No browser e2e of the shell, no axe run and no production-artifact scan for
-test hooks exist here because there are no test hooks (B.VUE-2).
+Count at 2026-10-18: vitest 5.0.5 (jsdom), 6 files, 65 tests: `router.test.ts` (route table, redirects,
+no DAO route, lazy components, the four tool imports, no iframe), `network-selector.test.ts` (I7: mainnet
+disabled, reset on mount, written to the singleton), `design-tokens-used.test.ts` (no `--warning` text
+colour, every custom property exists; design-tokens F10), `build-inputs.test.ts` (the Dockerfile / `.env.example` /
+build-args inventory, F16, F18), `inline-scripts.test.ts` (F13) and `workflows.test.ts` (the release gate,
+F10, F14, F15, F19). Playwright 1.63 (Chromium), 3 tests in `e2e/routes.spec.ts` against the built app with
+every external request refused: Treasury at `/`, the four tool tabs of `/blockchain`, the legacy redirects;
+no uncaught page error. CI runs both on every push and on the release, together with `vue-tsc --noEmit`,
+stylelint, eslint (vue-a11y and `suiBoundary()`), html-validate, the production build, `check:dist`, the audit
+gate, `npm audit signatures`, the licence check, the image build and probe and the Trivy scan. The tools
+carry their own tests; the shell is also exercised by the live sweep and the gated `e2e:walrus` run
+(token-deployer-ui repository, `scripts/e2e-walrus-browser.mjs`) against the production dashboard. No axe
+run of the shell and no production-artifact scan for test hooks exist here because there are no test hooks
+(B.VUE-2).
 
 | Dimension | Assessment |
 | --- | --- |
-| Happy-path coverage | partial — live sweep and `e2e:walrus`; nothing automated per commit |
-| Error-path / failure-mode coverage | none in the shell (the tools cover theirs) |
-| Boundary / edge-case coverage | none (network selector reset to testnet is unit-untested) |
-| Security-relevant coverage | static: `suiBoundary()`, audit gate, signatures; no dynamic test |
+| Happy-path coverage | covered - every route and tool tab mounts per commit; signing flows are the tools' (live sweep, `e2e:walrus`) |
+| Error-path / failure-mode coverage | the shell has none of its own; the retired paths and an unknown route are covered; the tools cover theirs |
+| Boundary / edge-case coverage | the network selector's mainnet reset; inline-script shapes (script with body, handler attributes) |
+| Security-relevant coverage | `suiBoundary()`, audit gate, signatures, the mainnet guard, the CSP/inline-script check and the container probe |
 
 ### C.2 Hermetic vs. live paths
 
 | Path | Hermetic? | Deferred to | Tracking |
 | --- | --- | --- | --- |
-| Build, lint, type-check, licences | yes | — | CI |
+| Build, lint, type-check, licences, unit tests, the browser smoke test (no network), the image probe | yes | — | CI |
 | Tool flows through the shared wallet | no | testnet | `e2e:walrus` and the paywall e2e (maintainer, with the key); Chromium sweep. Paywall e2e PASS against the live dashboard 2026-10-09 (pass bought on gate `0x316f1bf9…`, consumed, upload through the Worker) |
-| Served headers, `/THIRD_PARTY_LICENSES`, non-root pod | no | live deployment | manual `curl -I` 2026-10-09; `verify-digests.sh` (F14) |
+| Served headers, `/THIRD_PARTY_LICENSES`, non-root pod | no | live deployment | manual `curl -I` 2026-10-09 against the deployment; `scripts/smoke.sh` asserts the same headers on the built image per commit (F14); `verify-digests.sh` |
 
 ## Section D — Deployment-readiness gates
 
@@ -416,10 +498,10 @@ test hooks exist here because there are no test hooks (B.VUE-2).
 - [x] 0.1.84 deployed (2026-10-09); release run green; cosign signature valid (`verify-digests.sh` 16/16)
 - [x] test-mode guards: none needed — no test mode exists (B.VUE-2)
 - [x] non-root runtime; pod security context complete; probes and limits set (F11)
-- [x] audit gate in CI and publish; `npm pack` contents verified (12 files); no install-time code (TS B.TS-2)
+- [x] audit gate in CI and publish; `npm pack` contents verified (13 files); no install-time code (TS B.TS-2)
 - [x] `SECURITY.md` present (F7)
-- [x] release gate equals CI for the image (F10); the npm publish gate is narrower (F15, ACCEPTED-RISK)
-- [ ] config scan and container probe in CI — accepted gap (F14)
+- [x] release gate equals CI for the image (F10) and for the npm package (F15, 0.1.85, `verify` calls `node-ci.yml`)
+- [x] config scan and container probe in CI (F14, 0.1.85) — `image` job + `scripts/smoke.sh`, Trivy `scan` job; first CI run pending the push
 
 ### pre-mainnet
 
@@ -446,7 +528,7 @@ test hooks exist here because there are no test hooks (B.VUE-2).
 - **Chain-access layering** — no chain logic in the shell (`suiBoundary()`); the relay gate id comes
   from the repository variable `VITE_ACCESS_GATE_ID_TESTNET` (`0x316f1bf9…faddc`, the 2026-10-09
   gate on the latest `access_gate`), read by the embedded tools, which also hold the same id in the
-  access-gate-client `deployments` export. Embedded access-gate-client 0.0.8 and seal-client 0.0.19
+  access-gate-client `deployments` export. Embedded access-gate-client 0.0.9 and seal-client 0.0.20
   (one copy of each in the bundle).
 
 ## Normative requirements (MUST / MUST NOT)
@@ -456,21 +538,17 @@ test hooks exist here because there are no test hooks (B.VUE-2).
 - **VUE-M1–VUE-M9** — hold where applicable; VUE-M3 and VUE-M4 are N/A (no test mode, no signing in
   the shell); VUE-M8 holds with the broad `https:` sources recorded in F12.
 - **IMG-M1–IMG-M8** — hold (M7 and M8 per F10; the verification command is repository-anchored, F17).
-  The CI config scan implied by Section C is the accepted gap F14.
+  The CI config scan and container probe implied by Section C are in CI (F14).
 - The release MUST keep calling the full CI before building (F10), and MUST scan before signing.
 - `connect-src` MUST be enumerated before mainnet if the endpoint set is fixed by then (F12).
 
 ## Implementation suggestions (SHOULD / MAY)
 
-- SHOULD add a CI step that fails when `dist/index.html` contains an inline `<script>` without `src`
-  (F13), and a `trivy config` step plus a header probe against the built image (F14).
-- SHOULD make the npm publish `verify` job call `node-ci.yml` (F15).
-- SHOULD list every `VITE_*` variable in `.env.example`, drop the unused `VITE_RPC_*` build args or
-  pass them, fix the `.env.production` comment and the "pinned exactly" sentence in `CLAUDE.md`, and
-  mention the Treasury and Token Deployer views in `SECURITY.md` (F16, F7).
+- (Done in 0.1.85: the inline-script check (F13), the Trivy scan and container probe (F14), the npm
+  `verify` job calling `node-ci.yml` (F15) and the `.env.example` inventory with the doc fixes (F16).)
 - MAY drop the retained `@meddleware/dao-ui` dependency until governance returns (it is not bundled,
   but every release has to keep it current).
-- MAY add the `CHANGELOG.md` that `files` lists (the file does not exist), or remove it from `files`.
+- MAY add an axe contrast run over the shell's own screens (the shared components are covered by the ui gallery; the tools by their audits).
 
 ## Open questions (`OQ#`)
 
@@ -514,3 +592,17 @@ test hooks exist here because there are no test hooks (B.VUE-2).
   0.1.56/0.0.36/0.1.35/0.0.34/0.0.16, wallet-adapter 0.0.17, `@mysten/sui` 2.35.0, 362 signatures and
   143 attestations, 385 locked packages). Template dates reconciled with the registry (TS, VUE, IMG
   2026-10-08). Section D ticked with evidence; open boxes are mainnet-blocked or maintainer-only.
+- 2026-10-18 — fix wave, 0.1.85 (commit pending): embeds the 2026-10-18 builds of every tool
+  (walrus-ui 0.1.58, token-deployer-ui 0.0.36, access-gate-ui 0.1.37, seal-ui 0.0.38, treasury-ui 0.0.18,
+  dao-ui 0.1.34 retained; walrus-relay 0.1.31, walrus-client 0.0.28, access-gate-client 0.0.9,
+  seal-client 0.0.20, sui-token-client 0.0.11, design-tokens 0.1.10, `@mysten/sui` 2.36.0), static-server
+  0.1.8 (`sha256:e32cf42b…4000`, read from quay.io 2026-10-18). F13, F14, F15, F16 RESOLVED (inline-script
+  guard; image build and probe plus Trivy scan; npm `verify` calls `node-ci.yml`; build-input inventory);
+  F18 (price variable removed), F19 (npm 11.20.0 for the signature step) and F20 (unit and browser tests)
+  added RESOLVED. Section C regraded B; Section D F14 box ticked. F12 stays ACCEPTED-RISK (the
+  endpoint set is not fixed); F17 and the open Section D boxes stay maintainer-only or mainnet-blocked. The
+  embedded tools take no props; their configuration is build-time `VITE_*`, checked against each tool's
+  CHANGELOG (no other variable changed). Checks: type-check, lint (css, js, html), 65 unit tests, 3 browser
+  tests, build, `check:dist`, `check:licenses`, audit gate, `npm audit signatures` (npm 11.20.0), image
+  build and `scripts/smoke.sh` (rootless podman). The first CI run of the `image` and `scan` jobs happens
+  on the push.
