@@ -245,7 +245,7 @@ the mainnet endpoint list; narrowing `img-src` follows the image policy of the t
 
 ### F13 — No build-time check for inline scripts
 
-**Severity:** Low   **Disposition:** RESOLVED (0.1.85, commit pending)
+**Severity:** Low   **Disposition:** RESOLVED (0.1.85, commit `404291d`)
 **Where:** `.github/workflows/node-ci.yml`, `Dockerfile`, `scripts/check-inline-scripts.mjs`
 **Issue:** B.VUE-1 asks for a build-time check that fails when the build emits an inline script not
 covered by the CSP. The dashboard had none; the build emits none (`index.html` carries one
@@ -262,7 +262,7 @@ run it. Runtime: `script-src` has no `'unsafe-inline'`, so an uncovered inline s
 
 ### F14 — No image configuration scan or container probe in CI
 
-**Severity:** Low   **Disposition:** RESOLVED (0.1.85, commit pending)
+**Severity:** Low   **Disposition:** RESOLVED (0.1.85, commit `404291d`)
 **Where:** `.github/workflows/node-ci.yml`, `scripts/smoke.sh`
 **Issue:** the IMG lens (Section C) asks CI to scan the Dockerfile and manifests (e.g. Trivy config)
 and to probe the running container (health, served headers, non-root). The dashboard's CI scanned the
@@ -285,7 +285,7 @@ yet (first run on the 0.1.85 push): if it reports a misconfiguration in the Dock
 
 ### F15 — npm publish gate is narrower than CI
 
-**Severity:** Info   **Disposition:** RESOLVED (0.1.85, commit pending)
+**Severity:** Info   **Disposition:** RESOLVED (0.1.85, commit `404291d`)
 **Where:** `.github/workflows/npm-publish.yml`
 **Issue:** the Docker release calls `node-ci.yml` (F10), but the npm publish workflow had its own
 `verify` job (audit gate, signatures, type-check, unit tests) and built in the publish job; it skipped
@@ -300,7 +300,7 @@ runs. `tests/workflows.test.ts` pins that both release workflows call `node-ci.y
 
 ### F16 — Build-input inventory incomplete or stale in the repository's docs
 
-**Severity:** Info   **Disposition:** RESOLVED (0.1.85, commit pending)
+**Severity:** Info   **Disposition:** RESOLVED (0.1.85, commit `404291d`)
 **Where:** `.env.example`, `.env.production`, `Dockerfile`, workflows, `CLAUDE.md`, `package.json`
 **Issue:** the VUE lens asks that every `VITE_*` variable the build reads appears in `.env.example`.
 `.env.example` listed only `VITE_DOCS_URL` and `VITE_DEV_URL`; the tool views read the other
@@ -340,7 +340,7 @@ it). The self-hosted mirror is listed as best-effort and unsigned in B.2.
 
 ### F18 — Access-gate price configured at build time (superseded: read from the chain)
 
-**Severity:** Info   **Disposition:** RESOLVED (0.1.85, commit pending)
+**Severity:** Info   **Disposition:** RESOLVED (0.1.85, commit `404291d`)
 **Where:** `Dockerfile`, `.github/workflows/docker-publish.yml`, `.env.example`, `CLAUDE.md`
 **Issue:** the image accepted `VITE_ACCESS_GATE_PRICE_MIST_TESTNET`, a price the embedded tools used to
 show and sign for. `@meddleware/walrus-relay` 0.1.31 reads the price from the gate on the chain (and shows
@@ -359,7 +359,7 @@ production values (`0x316f1bf9…faddc`, soulbound) built in, the Walrus tab mou
 
 ### F19 — Signature check failed on the npm bundled with Node 24.13
 
-**Severity:** Low   **Disposition:** RESOLVED (0.1.85, commit pending)
+**Severity:** Low   **Disposition:** RESOLVED (0.1.85, commit `404291d`)
 **Where:** `.github/workflows/node-ci.yml`
 **Issue:** `npm audit signatures` with npm 11.6.2 (the npm of Node 24.13) fails with `EMISSINGSIGNATUREKEY`
 ("has attestations but no corresponding public key(s) can be found") on `@meddleware/token-deployer-ui`
@@ -373,7 +373,7 @@ read current attestations would tempt a bypass.
 
 ### F20 — No automated check that the built shell mounts every tool
 
-**Severity:** Low   **Disposition:** RESOLVED (0.1.85, commit pending)
+**Severity:** Low   **Disposition:** RESOLVED (0.1.85, commit `404291d`)
 **Where:** `e2e/routes.spec.ts`, `tests/`
 **Issue:** the shell had no tests (C.1 grade C); a tool that throws on import or mount after a dependency
 bump (as the walrus-relay 0.1.31 gate contract could) was found only in a manual sweep.
@@ -592,7 +592,7 @@ run of the shell and no production-artifact scan for test hooks exist here becau
   0.1.56/0.0.36/0.1.35/0.0.34/0.0.16, wallet-adapter 0.0.17, `@mysten/sui` 2.35.0, 362 signatures and
   143 attestations, 385 locked packages). Template dates reconciled with the registry (TS, VUE, IMG
   2026-10-08). Section D ticked with evidence; open boxes are mainnet-blocked or maintainer-only.
-- 2026-10-18 — fix wave, 0.1.85 (commit pending): embeds the 2026-10-18 builds of every tool
+- 2026-10-18 — fix wave, 0.1.85 (commit `404291d`): embeds the 2026-10-18 builds of every tool
   (walrus-ui 0.1.58, token-deployer-ui 0.0.36, access-gate-ui 0.1.37, seal-ui 0.0.38, treasury-ui 0.0.18,
   dao-ui 0.1.34 retained; walrus-relay 0.1.31, walrus-client 0.0.28, access-gate-client 0.0.9,
   seal-client 0.0.20, sui-token-client 0.0.11, design-tokens 0.1.10, `@mysten/sui` 2.36.0), static-server
