@@ -5,6 +5,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); version
 [Semantic Versioning](https://semver.org/). Before 0.2.0, breaking changes ship as patch releases.
 Releases before 0.1.85 are recorded in the git history only.
 
+## [0.1.87] - 2026-10-19
+
+### Changed
+
+- Image rebuilt without the `VITE_UPLOAD_RELAY_MAX_TIP_MIST` repository variable (deleted; it still held the old 0.05 SUI ceiling and overrode the 0.005 SUI default introduced in the previous release)
+
 ## [0.1.86] - 2026-10-19
 
 ### Changed
