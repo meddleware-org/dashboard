@@ -5,6 +5,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); version
 [Semantic Versioning](https://semver.org/). Before 0.2.0, breaking changes ship as patch releases.
 Releases before 0.1.85 are recorded in the git history only.
 
+## [0.1.86] - 2026-10-19
+
+### Changed
+
+- Embedded apps on their re-priced releases (workspace cost model, D57): token-deployer-ui 0.0.37 (2 SUI deploy fee, 0.005 SUI tip ceiling), walrus-ui 0.1.59, seal-ui 0.0.39; ui ^0.1.32; dependency updates and the Node 26 baseline merged since 0.1.85
+
 ## [0.1.85] - 2026-10-18
 
 ### Changed
