@@ -325,8 +325,8 @@ is baked and documented in `.env.example`, every variable the shell reads is doc
 **Severity:** Low   **Disposition:** DEFERRED (maintainer: `OPERATOR_TASKS.md` "Image registry
 credentials"; the npm-side lockdown is "npm housekeeping")
 **Where:** repository secrets `QUAY_TOKEN`, `DOCKERHUB_TOKEN` (set 2026-09-02); the best-effort
-self-hosted mirror jobs read `PRIVATE_REGISTRY_*`, which are not set (the jobs fail without
-credentials and are `continue-on-error`; maintainer item)
+self-hosted `mirror-private` job (a digest-preserving copy of the published image) reads `PRIVATE_REGISTRY_*`, which are not set (the job fails without
+credentials and is `continue-on-error`; maintainer item)
 **Issue:** the build jobs hold the registry credentials (the push cannot be keyless), so a runner
 compromise could push to the image repositories. The signature, not the registry, is what the
 cluster verifies, and deployments pin by digest, which bounds the damage.
@@ -446,7 +446,7 @@ inputs, the inline-script check and the release-gate workflows. Both run in `nod
 | npm publish | GitHub Actions (`npm-publish.yml`, `NPM_PUBLISH=true`) | OIDC trusted publishing + provenance; npm client pinned 11.20.0; idempotent | library | n/a; token-publishing lockdown is the maintainer's (F17, OQ3) |
 | `QUAY_TOKEN`, `DOCKERHUB_TOKEN` (+ usernames) | GitHub secrets (set 2026-09-02) | robot accounts | image push | scope and rotation to be recorded (F17) |
 | image signing, SBOM and provenance attestations | GitHub Actions (`merge-docker-public`) | cosign keyless; SPDX SBOM attestation; build provenance, pushed to the registry; no `continue-on-error` on the public path | images (index digest) | n/a |
-| self-hosted registry mirror | `*-private` jobs | `PRIVATE_REGISTRY_*` not set; `continue-on-error`, unsigned | none (best-effort) | maintainer item |
+| self-hosted registry mirror | `mirror-private` job | `PRIVATE_REGISTRY_*` not set; `continue-on-error`; copies the signed public image by digest | none (best-effort) | maintainer item |
 | Workflow hygiene | `.github/workflows/*` | Actions pinned by full SHA; `permissions:` per workflow and job (`id-token`/`attestations: write` only on the merge job and the npm publish job); release gate = `node-ci.yml` via `workflow_call` (Docker and npm, F15); CI pins npm 11.20.0 for the signature step (F19); Dependabot weekly, grouped (npm, docker, github-actions) | all | n/a |
 
 ## Section C — Test-coverage & hermetic/live split
@@ -610,3 +610,4 @@ run of the shell and no production-artifact scan for test hooks exist here becau
 - 2026-10-19 — dependency-bot status checked (read-only): `.github/dependabot.yml` carries the `ignore` rules and the repository has no open Dependabot pull requests (`gh pr list`, 2026-10-19). Versions, findings and gates were not re-examined in this pass.
   - `Dockerfile` on GitHub `main` now pins the `static-server` base at `0.1.9@sha256:af6cc284…edc72` (merged Dependabot docker PR); this repo was not re-released or redeployed for it, so the deployed image is still built on the 0.1.8 base (the stock default CSP added in 0.1.9 is replaced by this repo's own `CONTENT_SECURITY_POLICY`).
   - Dependabot policy encoded in .github/dependabot.yml (majors declined); open PRs merged 2026-10-19
+  - `docker-publish.yml`: the private rebuild jobs are replaced by one `mirror-private` job that copies the published quay.io image (and its cosign artifacts) to the self-hosted registry by digest and fails unless the digest and the signature match (build once, promote by digest; committed locally, not yet released; the `PRIVATE_REGISTRY_*` credentials are still unset).

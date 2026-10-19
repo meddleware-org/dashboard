@@ -1,6 +1,6 @@
 // The dashboard bakes build-time configuration into a public bundle. This pins the inventory (audit F16):
 // every VITE_* the Dockerfile accepts is documented in .env.example, every variable the shell reads is
-// accepted, the four release builds pass one and the same set, and a variable an embedded tool no longer
+// accepted, the two release builds (amd64, arm64) pass one and the same set, and a variable an embedded tool no longer
 // reads (the access-gate price, read from the chain since walrus-relay 0.1.31) is gone everywhere.
 import { describe, it, expect } from 'vitest'
 import { readFileSync, readdirSync } from 'node:fs'
@@ -61,11 +61,11 @@ describe('Dockerfile build inputs', () => {
 })
 
 describe('release build arguments', () => {
-  it('has a build-args block for each of the four image builds', () => {
-    expect(buildArgBlocks).toHaveLength(4)
+  it('has a build-args block for each of the two image builds (the self-hosted registry gets the published image by digest, not a rebuild)', () => {
+    expect(buildArgBlocks).toHaveLength(2)
   })
 
-  it('passes the same set to every build (the registry mirrors carry the same bundle)', () => {
+  it('passes the same set to every build (both architectures carry the same bundle)', () => {
     for (const block of buildArgBlocks) expect(block).toEqual(buildArgBlocks[0])
   })
 
