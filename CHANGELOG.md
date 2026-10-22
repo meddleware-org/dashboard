@@ -5,6 +5,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); version
 [Semantic Versioning](https://semver.org/). Before 0.2.0, breaking changes ship as patch releases.
 Releases before 0.1.85 are recorded in the git history only.
 
+## [0.1.88] - 2026-10-22
+
+### Changed
+
+- Embedded apps on their latest releases (access-gate-client 0.0.10 stale-indexer fallback, walrus-client 0.0.30 flow fix, nft-gate-client 0.0.18 rules); image base static-server 0.1.11 (Go 1.26.10 standard library, CVE-2026-111943)
+
 ## [0.1.87] - 2026-10-19
 
 ### Changed
