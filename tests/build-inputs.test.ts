@@ -1,7 +1,7 @@
 // The dashboard bakes build-time configuration into a public bundle. This pins the inventory (audit F16):
 // every VITE_* the Dockerfile accepts is documented in .env.example, every variable the shell reads is
 // accepted, the two release builds (amd64, arm64) pass one and the same set, and a variable an embedded tool no longer
-// reads (the access-gate price, read from the chain since walrus-relay 0.1.31) is gone everywhere.
+// reads (the access-gate price, read from the chain since walrus-storage-kit 0.1.31) is gone everywhere.
 import { describe, it, expect } from 'vitest'
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'

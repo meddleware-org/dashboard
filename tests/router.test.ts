@@ -16,7 +16,7 @@ describe('router', () => {
   })
 
   it('redirects the old per-tool paths to /blockchain', () => {
-    for (const path of ['/walrus', '/sealed-storage', '/access-gate', '/token-deployer']) {
+    for (const path of ['/walrus-storage', '/sealed-storage', '/access-gate', '/token-issuance']) {
       expect(byPath(path)?.redirect, path).toBe('/blockchain')
     }
   })
@@ -42,10 +42,10 @@ describe('tool mounting', () => {
 
   it('imports each tool view from its own package, lazily', () => {
     for (const [pkg, exported] of [
-      ['@meddleware/walrus-ui', 'WalrusView'],
-      ['@meddleware/seal-ui', 'SealView'],
+      ['@meddleware/walrus-storage-ui', 'WalrusStorageView'],
+      ['@meddleware/sealed-storage-ui', 'SealedStorageView'],
       ['@meddleware/access-gate-ui', 'AccessGateView'],
-      ['@meddleware/token-deployer-ui', 'TokenDeployerView'],
+      ['@meddleware/token-issuance-ui', 'TokenIssuanceView'],
     ]) {
       expect(view).toContain(`import('${pkg}').then((m) => m.${exported})`)
     }

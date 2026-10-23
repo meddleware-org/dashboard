@@ -29,10 +29,10 @@ const router = createRouter({
     // },
 
     // Legacy per-tool paths now live as tabs inside /blockchain — redirect old bookmarks.
-    { path: '/walrus', redirect: '/blockchain' },
+    { path: '/walrus-storage', redirect: '/blockchain' },
     { path: '/sealed-storage', redirect: '/blockchain' },
     { path: '/access-gate', redirect: '/blockchain' },
-    { path: '/token-deployer', redirect: '/blockchain' },
+    { path: '/token-issuance', redirect: '/blockchain' },
   ],
 })
 

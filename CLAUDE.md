@@ -1,11 +1,11 @@
-# CLAUDE.md — @meddleware/dashboard
+# CLAUDE.md — @meddleware/dashboard-ui
 
 ## What this app is
 
 A Vue 3 + Vite SPA serving as the organisation-level Meddleware hub at
 `dash.meddleware.co.uk`. It renders each tool/view inline by importing the exported component
-from its own package (e.g. `TreasuryView` from `@meddleware/treasury-ui`, `WalrusView` from
-`@meddleware/walrus-ui`) and wrapping it in the dashboard shell.
+from its own package (e.g. `TreasuryView` from `@meddleware/treasury-ui`, `WalrusStorageView` from
+`@meddleware/walrus-storage-ui`) and wrapping it in the dashboard shell.
 
 ### Information architecture (two org sections + a drill-down)
 
@@ -18,7 +18,7 @@ The sidebar has two **modes**:
   **up-one-level** ("← Back") control that returns to the top level *without leaving the page*.
   The content area (`/blockchain`, `views/BlockchainView.vue`) is a **qt-style tabbed console**
   (`AppTabNav variant="raised"`) whose tabs are the Sui tools — Walrus Storage, Sealed Storage,
-  Access Gate, Token Deployer — each lazy-loaded and kept alive across tab switches.
+  Access Gate, Token Issuance — each lazy-loaded and kept alive across tab switches.
 
 Sidebar mode is local UI state (`sidebarView: 'top' | 'blockchain'`), not a route: clicking
 *Blockchain* while already on `/blockchain` just re-opens the selector (no reload); *up one level*
@@ -87,7 +87,7 @@ both release workflows call it. CI also builds the image and probes the running 
 (`scripts/smoke.sh <image>`; `CONTAINER_ENGINE=podman` for rootless podman) and runs a Trivy filesystem scan.
 
 The embedded tools take no props: each reads its own `VITE_*` configuration at bundle time. The relay
-access-gate price is read from the chain (walrus-relay 0.1.31); there is no price variable.
+access-gate price is read from the chain (walrus-storage-kit 0.1.31); there is no price variable.
 
 ## Dependency order
 
@@ -97,7 +97,7 @@ For local development:
 ```bash
 cd repos/ui && npm install && npm run build
 cd repos/ui && npm link
-cd repos/dashboard && npm install && npm link @meddleware/ui
+cd repos/dashboard-ui && npm install && npm link @meddleware/ui
 npm run dev
 ```
 

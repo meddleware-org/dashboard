@@ -1,4 +1,4 @@
-# AGENTS.md — @meddleware/dashboard
+# AGENTS.md — @meddleware/dashboard-ui
 
 See [CLAUDE.md](CLAUDE.md) for architecture and scope constraints.
 

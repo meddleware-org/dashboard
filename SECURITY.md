@@ -2,13 +2,13 @@
 
 ## Scope
 
-This policy covers security issues in the `@meddleware/dashboard` application source (`src/**`) —
+This policy covers security issues in the `@meddleware/dashboard-ui` application source (`src/**`) —
 the tools-hub shell + router that mounts the tool views inline and owns the single shared wallet
 connection.
 
 It does not cover:
 
-- The individual tool views (`treasury-ui`, `walrus-ui`, `seal-ui`, `access-gate-ui`, `token-deployer-ui`,
+- The individual tool views (`treasury-ui`, `walrus-storage-ui`, `sealed-storage-ui`, `access-gate-ui`, `token-issuance-ui`,
   and `dao-ui`, which is retained but not mounted),
   `@meddleware/wallet-adapter`, or `platform-probe` (see their own policies)
 - The wallet extension (which confirms every signature)

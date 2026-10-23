@@ -8,7 +8,7 @@ const TOOLS = [
   { tab: 'Walrus Storage', body: /Upload and manage blobs on Walrus/ },
   { tab: 'Sealed Storage', body: /Client-side encrypted, access-gated storage/ },
   { tab: 'Access Gate', body: /Create and manage on-chain access gates/ },
-  { tab: 'Token Deployer', body: /Deploy your own Sui coin/ },
+  { tab: 'Token Issuance', body: /Deploy your own Sui coin/ },
 ] as const
 
 async function watch(page: Page): Promise<string[]> {
@@ -29,7 +29,7 @@ test('the Treasury view mounts at /', async ({ page }) => {
 test('every Blockchain tool mounts as a tab at /blockchain', async ({ page }) => {
   const errors = await watch(page)
   await page.goto('/blockchain')
-  const tabs = page.getByRole('tab', { name: /^(Walrus Storage|Sealed Storage|Access Gate|Token Deployer)$/ })
+  const tabs = page.getByRole('tab', { name: /^(Walrus Storage|Sealed Storage|Access Gate|Token Issuance)$/ })
   await expect(tabs).toHaveCount(TOOLS.length)
   for (const { tab, body } of TOOLS) {
     await page.getByRole('tab', { name: tab, exact: true }).click()
@@ -40,7 +40,7 @@ test('every Blockchain tool mounts as a tab at /blockchain', async ({ page }) =>
 
 test('the retired per-tool paths land on /blockchain', async ({ page }) => {
   const errors = await watch(page)
-  for (const path of ['/walrus', '/sealed-storage', '/access-gate', '/token-deployer']) {
+  for (const path of ['/walrus', '/sealed-storage', '/access-gate', '/token-issuance']) {
     await page.goto(path)
     await expect(page).toHaveURL(/\/blockchain$/)
   }

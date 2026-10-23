@@ -15,10 +15,10 @@ interface Tool extends AppTab {
 // Per-chain tool sets. Add a new key when onboarding a chain.
 const TOOLSETS: Record<string, Tool[]> = {
   sui: [
-    { id: 'walrus', label: 'Walrus Storage', comp: defineAsyncComponent(() => import('@meddleware/walrus-ui').then((m) => m.WalrusView)) },
-    { id: 'sealed', label: 'Sealed Storage', comp: defineAsyncComponent(() => import('@meddleware/seal-ui').then((m) => m.SealView)) },
+    { id: 'walrus-storage', label: 'Walrus Storage', comp: defineAsyncComponent(() => import('@meddleware/walrus-storage-ui').then((m) => m.WalrusStorageView)) },
+    { id: 'sealed-storage', label: 'Sealed Storage', comp: defineAsyncComponent(() => import('@meddleware/sealed-storage-ui').then((m) => m.SealedStorageView)) },
     { id: 'access-gate', label: 'Access Gate', comp: defineAsyncComponent(() => import('@meddleware/access-gate-ui').then((m) => m.AccessGateView)) },
-    { id: 'token-deployer', label: 'Token Deployer', comp: defineAsyncComponent(() => import('@meddleware/token-deployer-ui').then((m) => m.TokenDeployerView)) },
+    { id: 'token-issuance', label: 'Token Issuance', comp: defineAsyncComponent(() => import('@meddleware/token-issuance-ui').then((m) => m.TokenIssuanceView)) },
   ],
 }
 

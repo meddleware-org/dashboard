@@ -1,13 +1,13 @@
 {
-  "name": "@meddleware/dashboard",
-  "version": "0.1.88",
+  "name": "@meddleware/dashboard-ui",
+  "version": "0.1.89",
   "homepage": "https://docs.meddleware.co.uk/",
   "description": "Meddleware tools hub — Vue 3 SPA listing hosted services (Walrus, Access Gate) with white-label deploy options.",
   "author": "Meddleware <dev@meddleware.co.uk>",
   "license": "0BSD",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/meddleware-org/dashboard.git"
+    "url": "git+https://github.com/meddleware-org/dashboard-ui.git"
   },
   "type": "module",
   "files": [
@@ -40,12 +40,12 @@
     "@meddleware/access-gate-ui": "^0.1.39",
     "@meddleware/dao-ui": "^0.1.36",
     "@meddleware/design-tokens": "^0.1.10",
-    "@meddleware/seal-ui": "^0.0.40",
-    "@meddleware/token-deployer-ui": "^0.0.38",
+    "@meddleware/sealed-storage-ui": "^0.0.41",
+    "@meddleware/token-issuance-ui": "^0.0.39",
     "@meddleware/treasury-ui": "^0.0.20",
     "@meddleware/ui": "^0.1.32",
     "@meddleware/wallet-adapter": "^0.0.17",
-    "@meddleware/walrus-ui": "^0.1.61",
+    "@meddleware/walrus-storage-ui": "^0.1.62",
     "@mysten/sui": "^2.36.0",
     "vue": "^3.5.44",
     "vue-router": "^5.4.0"
