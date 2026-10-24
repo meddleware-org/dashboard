@@ -5,7 +5,7 @@ on:
       - "v*"
 
 env:
-  IMAGE: dashboard
+  IMAGE: dashboard-ui
 
 permissions:
   contents: read

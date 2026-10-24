@@ -5,6 +5,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); version
 [Semantic Versioning](https://semver.org/). Before 0.2.0, breaking changes ship as patch releases.
 Releases before 0.1.85 are recorded in the git history only.
 
+## [0.1.90] - 2026-10-24
+
+### Fixed
+
+- The image publish workflow pushed to the old repository name (`dashboard`); it now publishes `dashboard-ui`, the name `config/images.yaml` pins. No code change.
+
 ## [0.1.89] - 2026-10-24
 
 ### Changed
