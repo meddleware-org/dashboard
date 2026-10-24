@@ -16,7 +16,7 @@ describe('router', () => {
   })
 
   it('redirects the old per-tool paths to /blockchain', () => {
-    for (const path of ['/walrus-storage', '/sealed-storage', '/access-gate', '/token-issuance']) {
+    for (const path of ['/walrus', '/walrus-storage', '/sealed-storage', '/access-gate', '/token-deployer', '/token-issuance']) {
       expect(byPath(path)?.redirect, path).toBe('/blockchain')
     }
   })

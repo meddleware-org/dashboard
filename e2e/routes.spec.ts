@@ -40,7 +40,7 @@ test('every Blockchain tool mounts as a tab at /blockchain', async ({ page }) =>
 
 test('the retired per-tool paths land on /blockchain', async ({ page }) => {
   const errors = await watch(page)
-  for (const path of ['/walrus', '/sealed-storage', '/access-gate', '/token-issuance']) {
+  for (const path of ['/walrus', '/walrus-storage', '/sealed-storage', '/access-gate', '/token-deployer', '/token-issuance']) {
     await page.goto(path)
     await expect(page).toHaveURL(/\/blockchain$/)
   }
